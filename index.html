@@ -8,17 +8,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Creepster&display=swap');
-        
+
+        :root {
+            --primary-bg: linear-gradient(135deg, #2c1a0e 0%, #4c301c 50%, #6e482a 100%);
+            --section-bg: rgba(44, 26, 14, 0.7);
+            --border-color: #5a3d2e;
+            --accent-gold: #c98e2a;
+            --text-light: #d8c29e;
+            --text-dark: #4c301c;
+            --bg-light: #f5f5dc;
+            --glow-yellow: #ffeb3b;
+            --glow-orange: #ff9800;
+            --shadow-dark: rgba(0, 0, 0, 0.5);
+            --shadow-gold: rgba(201, 142, 42, 0.5);
+        }
+
         body {
             font-family: 'Cinzel', serif;
-            background: linear-gradient(135deg, #2c1a0e 0%, #4c301c 50%, #6e482a 100%);
+            background: var(--primary-bg);
             margin: 0;
             padding: 20px;
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
-            color: #d8c29e;
+            color: var(--text-light);
         }
+
         body::before {
             content: '';
             position: fixed;
@@ -30,96 +45,143 @@
             opacity: 0.1;
             z-index: -1;
         }
+
         h1 {
             text-align: center;
-            color: #c98e2a;
-            text-shadow: 0 0 5px #ffeb3b, 0 0 10px #ff9800;
-            font-size: 3em;
+            color: var(--accent-gold);
+            text-shadow: 0 0 5px var(--glow-yellow), 0 0 10px var(--glow-orange);
+            font-size: clamp(2em, 5vw, 3em);
             font-family: 'Creepster', cursive;
             margin-bottom: 10px;
             animation: glow 2s infinite alternate;
         }
+
         @keyframes glow {
-            0% { text-shadow: 0 0 5px #c98e2a, 0 0 10px #c98e2a; }
-            100% { text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ff9800; }
+            0% { text-shadow: 0 0 5px var(--accent-gold), 0 0 10px var(--accent-gold); }
+            100% { text-shadow: 0 0 10px var(--glow-yellow), 0 0 20px var(--glow-orange); }
         }
+
+        .subtitle {
+            text-align: center;
+            color: #F4A460;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
         section {
-            background: rgba(44, 26, 14, 0.7);
-            border: 2px solid #5a3d2e;
+            background: var(--section-bg);
+            border: 2px solid var(--border-color);
             border-radius: 10px;
             padding: 20px;
             margin: 20px auto;
             max-width: 800px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5), 0 0 10px rgba(201, 142, 42, 0.5);
+            box-shadow: inset 0 0 15px var(--shadow-dark), 0 0 10px var(--shadow-gold);
             position: relative;
         }
+
         h2 {
-            color: #d8c29e;
+            color: var(--text-light);
             text-align: center;
             text-shadow: 1px 1px 2px #000;
-            border-bottom: 2px dashed #c98e2a;
+            border-bottom: 2px dashed var(--accent-gold);
             padding-bottom: 10px;
             font-size: 2em;
+            margin-top: 0;
         }
+
+        h3 {
+            color: var(--text-light);
+            border-bottom: 1px dashed var(--accent-gold);
+            padding-bottom: 5px;
+        }
+
         select, input, textarea, button {
-            background: #f5f5dc;
+            background: var(--bg-light);
             border: 1px solid #4c301c;
             border-radius: 5px;
             padding: 8px;
             margin: 5px;
             font-family: inherit;
-            color: #4c301c;
+            color: var(--text-dark);
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 5px var(--shadow-gold);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+            width: 100%;
+        }
+
         button {
-            background: linear-gradient(#c98e2a, #a3721e);
-            color: #4c301c;
+            background: linear-gradient(var(--accent-gold), #a3721e);
+            color: var(--text-dark);
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s;
             text-transform: uppercase;
+            border: none;
         }
-        button:hover {
-            background: linear-gradient(#ffeb3b, #c98e2a);
+
+        button:hover:not(:disabled) {
+            background: linear-gradient(var(--glow-yellow), var(--accent-gold));
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .hidden { display: none; }
+
         .roll-display {
-            color: #ffeb3b;
+            color: var(--glow-yellow);
             font-weight: bold;
             text-shadow: 1px 1px 2px #000;
         }
+
         .char-input-group {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 10px;
         }
-        .char-input-group label { flex: 1; }
+
+        .char-input-group label { flex: 1; font-weight: bold; }
+
         .char-input-group input { flex: 2; }
-        .char-input-group button { flex: 1; }
 
         .skill-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 10px;
         }
+
         .skill-item {
-            border: 1px solid #c98e2a;
+            border: 1px solid var(--accent-gold);
             padding: 8px;
-            margin: 5px 0;
             background: rgba(0, 0, 0, 0.2);
             border-radius: 5px;
             position: relative;
         }
+
         .skill-item.archetype-skill { border-color: #5d9d7b; }
+
         .skill-item.occupation-skill { border-color: #9d5d5d; }
+
         .skill-item-title {
             font-weight: bold;
             color: #f5e7c8;
             font-size: 0.9em;
         }
+
         .skill-input-container {
             display: flex;
             align-items: center;
@@ -127,10 +189,13 @@
             font-size: 0.8em;
             margin-top: 5px;
         }
+
         .skill-label {
             font-size: 0.8em;
             color: #b8a07c;
+            font-style: italic;
         }
+
         .skill-input {
             width: 40px;
         }
@@ -140,6 +205,7 @@
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 10px;
         }
+
         .talent-item, .hindrance-item {
             display: flex;
             flex-direction: column;
@@ -149,54 +215,99 @@
             background: rgba(0,0,0,0.3);
             border-radius: 3px;
         }
+
         .talent-name, .hindrance-name {
             cursor: pointer;
             font-weight: bold;
             color: #f5e7c8;
             transition: color 0.2s;
         }
+
         .talent-name:hover, .hindrance-name:hover {
-            color: #ffeb3b;
+            color: var(--glow-yellow);
         }
+
         .talent-description, .hindrance-description {
             font-size: 0.9em;
-            color: #d8c29e;
+            color: var(--text-light);
             margin-top: 5px;
         }
-        
+
+        .points-summary {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .points-summary p {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            section { padding: 15px; }
+            .skill-grid { grid-template-columns: 1fr; }
+            .talent-grid, .hindrance-grid { grid-template-columns: 1fr; }
+            .char-input-group { flex-direction: column; align-items: flex-start; }
+        }
     </style>
 </head>
 <body>
     <h1>Western RPG Charactermancer</h1>
-    <p style="text-align: center; color: #F4A460;">Made for Rollingdeadly's The Quick and the Dead</p>
-    
+    <p class="subtitle">Made for Rollingdeadly's The Quick and the Dead</p>
+
     <section id="step1">
         <h2>Step 1: Choose your Western Archetype</h2>
-        <select id="archetype-select" title="Select your character's archetype to begin">
+        <select id="archetype-select" aria-label="Select your character's archetype">
+            <option value="">Select an Archetype...</option>
         </select>
-        <button onclick="selectArchetype()" title="Proceed to the next step after selecting an archetype">Saddle Up - Next</button>
+        <button onclick="selectArchetype()">Saddle Up - Next</button>
     </section>
+
     <section id="step2" class="hidden">
         <h2>Step 2: Choose your Occupation</h2>
-        <select id="occupation-select" title="Choose an occupation from your archetype's options">
+        <select id="occupation-select" aria-label="Choose an occupation">
+            <option value="">Select an Occupation...</option>
         </select>
-        <button onclick="selectOccupation()" title="Move to the next step after selecting an occupation">Next</button>
-        <button onclick="prevStep(1)" title="Return to the previous step">Back</button>
+        <button onclick="selectOccupation()">Next</button>
+        <button onclick="prevStep(1)">Back</button>
     </section>
+
     <section id="step3" class="hidden">
         <h2>Step 3: Generate Characteristics</h2>
-        <p>Core Characteristic: <select id="core-char-select" onchange="updateCharacteristicInputs()" title="Select the core characteristic to roll for"></select></p>
+        <p>Core Characteristic: <select id="core-char-select" aria-label="Select core characteristic" onchange="updateCharacteristicInputs()"></select></p>
         <p class="roll-display">Core Roll: <span id="core-roll-display">Not rolled yet</span></p>
-        <button onclick="rollCore()" title="Roll for core characteristic (65 + D6x5)">Roll Core</button>
+        <button onclick="rollCore()">Roll Core</button>
         <p>Total points: 460 + Core. Allocate to: STR, CON, DEX, POW, APP, EDU, INT, SIZ (Min 15, Max 130)</p>
         <div id="char-alloc"></div>
         <p>Remaining Points: <span id="remaining-points">460</span></p>
-        <button onclick="completeChars()" title="Finish allocating characteristics and proceed">Next</button>
-        <button onclick="prevStep(2)" title="Return to the previous step">Back</button>
+        <button onclick="completeChars()">Next</button>
+        <button onclick="prevStep(2)">Back</button>
     </section>
+
     <section id="step4" class="hidden">
         <h2>Step 4: Choose Age & Apply Modifiers</h2>
-        <select id="age-select" onchange="toggleDeduct()" title="Select your character's age to apply modifiers">
+        <select id="age-select" onchange="toggleDeduct()" aria-label="Select age">
             <option value="18-21">18-21: Deduct 5 total among STR, CON, DEX. Max Luck 90.</option>
             <option value="22-39">22-39: +10 EDU</option>
             <option value="40-49">40-49: +20 EDU, -10 APP, -10 total from STR, CON, DEX</option>
@@ -205,30 +316,32 @@
         </select>
         <div id="age-deduct" class="hidden">
             <p>Distribute total deduction across STR, CON, DEX:</p>
-            <label>STR: <input id="deduct-str" type="number" min="0" value="0" onchange="validateAgeDeduct()" title="Deduct points from Strength"></label>
-            <label>CON: <input id="deduct-con" type="number" min="0" value="0" onchange="validateAgeDeduct()" title="Deduct points from Constitution"></label>
-            <label>DEX: <input id="deduct-dex" type="number" min="0" value="0" onchange="validateAgeDeduct()" title="Deduct points from Dexterity"></label>
+            <label>STR: <input id="deduct-str" type="number" min="0" value="0" onchange="validateAgeDeduct()"></label>
+            <label>CON: <input id="deduct-con" type="number" min="0" value="0" onchange="validateAgeDeduct()"></label>
+            <label>DEX: <input id="deduct-dex" type="number" min="0" value="0" onchange="validateAgeDeduct()"></label>
             <p>Total Deducted: <span id="total-deduct">0</span>/<span id="required-deduct">0</span></p>
         </div>
         <div id="age-18-21-deduct" class="hidden">
             <p>Distribute 5 points to deduct from STR, CON, DEX:</p>
-            <label>STR: <input id="deduct-str-18-21" type="number" min="0" max="5" value="0" onchange="validateAgeDeduct()" title="Deduct points from Strength (max 5)"></label>
-            <label>CON: <input id="deduct-con-18-21" type="number" min="0" max="5" value="0" onchange="validateAgeDeduct()" title="Deduct points from Constitution (max 5)"></label>
-            <label>DEX: <input id="deduct-dex-18-21" type="number" min="0" max="5" value="0" onchange="validateAgeDeduct()" title="Deduct points from Dexterity (max 5)"></label>
+            <label>STR: <input id="deduct-str-18-21" type="number" min="0" max="5" value="0" onchange="validateAgeDeduct()"></label>
+            <label>CON: <input id="deduct-con-18-21" type="number" min="0" max="5" value="0" onchange="validateAgeDeduct()"></label>
+            <label>DEX: <input id="deduct-dex-18-21" type="number" min="0" max="5" value="0" onchange="validateAgeDeduct()"></label>
             <p>Total Deducted: <span id="total-deduct-18-21">0</span>/5</p>
         </div>
-        <button onclick="applyAge()" title="Apply age modifiers and proceed">Apply & Next</button>
-        <button onclick="prevStep(3)" title="Return to the previous step">Back</button>
+        <button onclick="applyAge()">Apply & Next</button>
+        <button onclick="prevStep(3)">Back</button>
     </section>
+
     <section id="step5" class="hidden">
         <h2>Step 5: Determine Secondary Attributes</h2>
-        <button onclick="rollLuck()" title="Roll Luck (30 + 2D6x5)">Roll Luck</button>
+        <button onclick="rollLuck()">Roll Luck</button>
         <p class="roll-display">Luck: <span id="luck-display">Not rolled yet</span></p>
-        <button onclick="calcSecondaries()" title="Calculate all secondary attributes">Calculate All</button>
+        <button onclick="calcSecondaries()">Calculate All</button>
         <div id="secondary-display"></div>
-        <button onclick="nextStep(6)" title="Move to the next step">Next</button>
-        <button onclick="prevStep(4)" title="Return to the previous step">Back</button>
+        <button onclick="nextStep(6)">Next</button>
+        <button onclick="prevStep(4)">Back</button>
     </section>
+
     <section id="step6" class="hidden">
         <h2>Step 6: Skill Points</h2>
         <p>Based on your choices, here are your total skill points:</p>
@@ -240,853 +353,561 @@
         <hr>
         <p>Use the inputs below as a scratchpad to help track your skill point allocation.</p>
         <div id="skill-alloc" class="skill-grid"></div>
-        <button onclick="completeSkills()" id="complete-skills-btn">Next</button>
-        <button onclick="prevStep(5)" title="Return to the previous step">Back</button>
+        <button id="complete-skills-btn" onclick="completeSkills()" disabled>Next</button>
+        <button onclick="prevStep(5)">Back</button>
     </section>
+
     <section id="step7" class="hidden">
         <h2>Step 7: Determine Hindrances and Talents</h2>
-        <button onclick="rollNaturalTalent()" title="Roll for a natural talent">Roll Natural Talent</button>
+        <button onclick="rollNaturalTalent()">Roll Natural Talent</button>
         <p class="roll-display">Natural Talent: <span id="natural-talent">Not rolled yet</span></p>
-        <p>Archetype Talent: <span id="arch-talent"></span></p>
-        
+        <p><strong>Archetype Talent:</strong> <span id="arch-talent"></span></p>
         <h3>Hindrances (Max 5 total, 1 major >4)</h3>
         <div id="hindrance-checkboxes" class="hindrance-grid"></div>
         <p>Hindrances: <span id="selected-hinds">None</span> | Talent Points: <span id="talent-points">0</span></p>
-
         <h3>Talents (Max 5 total incl. arch/natural, 1 major >4)</h3>
         <div id="talent-checkboxes" class="talent-grid"></div>
         <p>Talents: <span id="selected-tals">None</span></p>
-
-        <button onclick="completeHT()" title="Finish hindrances and talents and proceed">Next</button>
-        <button onclick="prevStep(6)" title="Return to the previous step">Back</button>
+        <button onclick="completeHT()">Next</button>
+        <button onclick="prevStep(6)">Back</button>
     </section>
+
     <section id="step8" class="hidden">
         <h2>Step 8: Create Backstory</h2>
-        <label>Name: <input id="name" type="text" title="Enter your character's name"></label><br>
-        <label>Gender: <input id="gender" type="text" title="Enter your character's gender"></label><br>
-        <label>Personal Description: <textarea id="description" title="Describe your character's appearance and personality"></textarea></label><br>
-        <label>Heritage: <select id="heritage" title="Choose your character's heritage">
-            <option value="a">a. African American</option>
-            <option value="b">b. Far East (Chinese, Japanese, etc.)</option>
-            <option value="c">c. European (Irish American, Italian, German...)</option>
-            <option value="d">d. Southern (Mexican, Cuban, etc.)</option>
-            <option value="e">e. Mysterious (There’s something odd about you...)</option>
-        </select></label><br>
-        <label>Ideology/Beliefs: <input id="ideology" type="text" title="Enter your character's beliefs or ideology"></label><br>
-        <label>Significant People: <input id="significant-people" type="text" title="List important people in your character's life"></label><br>
-        <label>Meaningful Location/Possessions: <input id="meaningful" type="text" title="Note a significant place or item"></label><br>
-        <label>Traits: <input id="traits" type="text" title="List your character's personality traits"></label><br>
-        <label>Bout of Madness: <textarea id="madness" title="Describe a past moment of madness"></textarea></label><br>
-        <label>Hair/Eye Color: <input id="hair-eye" type="text" title="Enter hair and eye color"></label><br>
-        <label>Distinguishing Marks: <input id="marks" type="text" title="Note any scars or marks"></label><br>
-        <button onclick="completeBackstory()" title="Finish backstory and proceed">Next</button>
-        <button onclick="prevStep(7)" title="Return to the previous step">Back</button>
+        <label for="name">Name: <input id="name" type="text"></label>
+        <label for="gender">Gender: <input id="gender" type="text"></label>
+        <label for="description">Personal Description: <textarea id="description"></textarea></label>
+        <label for="heritage">Heritage: 
+            <select id="heritage">
+                <option value="a">a. African American</option>
+                <option value="b">b. Far East (Chinese, Japanese, etc.)</option>
+                <option value="c">c. European (Irish American, Italian, German...)</option>
+                <option value="d">d. Southern (Mexican, Cuban, etc.)</option>
+                <option value="e">e. Mysterious (There’s something odd about you...)</option>
+            </select>
+        </label>
+        <label for="ideology">Ideology/Beliefs: <input id="ideology" type="text"></label>
+        <label for="significant-people">Significant People: <input id="significant-people" type="text"></label>
+        <label for="meaningful">Meaningful Location/Possessions: <input id="meaningful" type="text"></label>
+        <label for="traits">Traits: <input id="traits" type="text"></label>
+        <label for="madness">Bout of Madness: <textarea id="madness"></textarea></label>
+        <label for="hair-eye">Hair/Eye Color: <input id="hair-eye" type="text"></label>
+        <label for="marks">Distinguishing Marks: <input id="marks" type="text"></label>
+        <button onclick="completeBackstory()">Next</button>
+        <button onclick="prevStep(7)">Back</button>
     </section>
+
     <section id="step9" class="hidden">
         <h2>Step 9: Finalize Character</h2>
-        <button onclick="generateSheet()" title="Generate character sheet and prepare for PDF export">Generate Sheet & Export</button>
-        <button onclick="prevStep(8)" title="Return to the previous step">Back</button>
+        <button onclick="generateSheet()">Generate Sheet & Export</button>
+        <button onclick="prevStep(8)">Back</button>
     </section>
+
     <section id="character-sheet" class="hidden">
         <h3 id="sheet-title"></h3>
         <div id="sheet-content"></div>
     </section>
-    <button id="export-pdf" class="hidden" onclick="exportToPDF()" title="Download the character sheet as a Wanted Poster PDF">Download PDF - Wanted Poster Style</button>
-    
+
+    <button id="export-pdf" class="hidden" onclick="exportToPDF()">Download PDF - Wanted Poster Style</button>
+
     <script>
-    const { jsPDF } = window.jspdf;
+        const { jsPDF } = window.jspdf;
 
-    const ARCHETYPES = {
-        "Adventurer": { core: ["DEX", "APP"], occupations: ["Archaeologist", "Big Game Hunter", "Bounty Hunter", "Confidence Trickster", "Dilettante", "Entertainer", "Expressman/woman", "Gambler", "Gentleman/lady", "Gunfighter", "Hobo", "Journalist", "Outlaw", "Scout/Mountain Person", "Soldier/Warrior"], bonusSkills: ["Climb", "Drive Coach/Wagon", "First Aid", "Fighting (any)", "Firearms (any)", "Gambling", "Jump", "Language Other (any)", "Mechanical Repair", "Ride", "Stealth", "Survival", "Rope Use", "Swim"], talent: 'Always Onward!'},
-        "Beefcake": { core: ["STR"], occupations: ["Bounty Hunter", "Cowboy/girl", "Entertainer", "Farmer", "Gunfighter", "Hired Muscle", "Lawman", "Outlaw", "Person of God", "Pugilist", "Sailor", "Scout/Mountain Person", "Soldier/warrior", "Tribe Member"], bonusSkills: ["Climb", "Fighting (Brawl)", "Intimidate", "Listen", "Mechanical Repair", "Psychology", "Swim", "Throw"], talent: 'Hard Hitter'},
-        "Bon Vivant": { core: ["SIZ"], occupations: ["Artist", "Author", "Big Game Hunter", "Butler", "Confidence Trickster", "Dilettante", "Entertainer", "Gambler", "Gentleman/lady", "Hobo", "Hooker", "Itinerant Worker", "Librarian", "Merchant", "Politician", "Rancher"], bonusSkills: ["Appraise", "Art/Craft (any)", "Charm", "Fast Talk", "Language Other (any)", "Listen", "Spot Hidden", "Psychology", "Gambling"], talent: 'Living Life!'},
-        "Cold Blooded": { core: ["INT"], occupations: ["Bounty Hunter", "Confidence Trickster", "Doctor", "Gambler", "Gunfighter", "Hired Muscle", "Hooker", "Journalist", "Lawman", "Lawyer/Judge", "Merchant", "Outlaw", "Politician", "Pugilist", "Scientist/Engineer", "Soldier", "Spy", "Zealot"], bonusSkills: ["Art/Craft (Acting)", "Disguise", "Fighting (any)", "Firearms (any)", "First Aid", "Gambling", "History", "Intimidate", "Law", "Listen", "Mechanical Repair", "Psychology", "Stealth", "Survival", "Track", "Trap"], talent: 'All According to Plan'},
-        "Egghead": { core: ["INT", "EDU"], occupations: ["Author", "Craftsperson", "Doctor", "Gambler", "Itinerant Worker", "Journalist", "Lawyer/Judge", "Librarian", "Minor", "Student/Teacher", "Scientist/Engineer"], bonusSkills: ["Anthropology", "Appraise", "Electrical Repair", "First Aid", "Gambling", "Language Other (any)", "Library Use", "Mechanical Repair", "Operate Heavy Machinery", "Science", "Trap"], talent: 'Eureka!'},
-        "Explorer": { core: ["DEX", "POW"], occupations: ["Author", "Big Game Hunter", "Coachman/woman", "Dilettante", "Expressman/woman", "Gentleman/lady", "Hobo", "Itinerant Worker", "Person of God", "Merchant", "Miner", "Sailor", "Student/Teacher", "Scout", "Tribe Member"], bonusSkills: ["Animal Handling", "Anthropology", "Archaeology", "Climb", "Drive Coach/Wagon", "Fighting (Brawl)", "First Aid", "Jump", "Language Other (any)", "Natural World", "Navigate", "Ride", "Rope Use", "Stealth", "Survival", "Track"], talent: 'Born Traveler'},
-        "Femme Fatale": { core: ["APP", "INT"], occupations: ["Artist", "Bartender", "Bounty Hunter", "Confidence Trickster", "Dilettante", "Entertainer", "Gambler", "Gentleman/lady", "Hooker", "Journalist", "Librarian", "Outlaw", "Politician", "Spy"], bonusSkills: ["Art/Craft (Acting)", "Appraise", "Charm", "Disguise", "Drive Coach/Wagon", "Fast Talk", "Fighting (Brawl)", "Firearms (Handgun)", "Gambling", "Listen", "Psychology", "Read Lips", "Rope Use", "Sleight of Hand", "Stealth", "Trap"], talent: 'Irresistible'},
-        "Hard Boiled": { core: ["CON"], occupations: ["Bounty Hunter", "Coachman/woman", "Cowboy/girl", "Farmer", "Gunfighter", "Hired Muscle", "Lawman", "Outlaw", "Person of God", "Pugilist", "Sailor", "Scout", "Soldier", "Zealot"], bonusSkills: ["Fighting (Brawl)", "Firearms (any)", "Drive Coach/Wagon", "Fast Talk", "Intimidate", "Law", "Listen", "Locksmith", "Sleight of Hand", "Spot Hidden", "Rope Use", "Stealth", "Throw"], talent: 'That all you got?'},
-        "Hunter": { core: ["INT", "CON"], occupations: ["Big Game Hunter", "Bounty Hunter", "Cowboy/girl", "Dilettante", "Expressman/woman", "Lawman", "Miner", "Outlaw", "Scout", "Tribe Member", "Zealot"], bonusSkills: ["Animal Handling", "Fighting (any)", "Firearms (any)", "First Aid", "Listen", "Natural World", "Navigate", "Spot Hidden", "Ride", "Rope Use", "Stealth", "Survival", "Swim", "Track", "Trap"], talent: 'No Escape'},
-        "Mystic": { core: ["POW"], occupations: ["Artist", "Confidence Trickster", "Craftsperson", "Doctor", "Entertainer", "Gentleman/lady", "Hobo", "Person of God", "Student/Teacher", "Scientist/Engineer", "Tribe Member", "Zealot"], bonusSkills: ["Art/Craft (any)", "Disguise", "History", "Language Other (any)", "Listen", "Natural World", "Occult", "Psychology", "Science", "Sleight of Hand", "Spot Hidden", "Stealth", "Track"], talent: 'Powers'},
-        "Outsider": { core: ["INT", "CON"], occupations: ["Artist", "Craftsperson", "Dilettante", "Entertainer", "Farmer", "Expressman/woman", "Hobo", "Itinerant Worker", "Miner", "Person of God", "Sailor", "Scout", "Tribe Member", "Zealot"], bonusSkills: ["Art/Craft (any)", "Animal Handling", "Fighting (any)", "First Aid", "Intimidate", "Language Other (any)", "Listen", "Medicine", "Navigate", "Stealth", "Survival (any)", "Track"], talent: 'Unorthodox Methods'},
-        "Rogue": { core: ["DEX", "APP"], occupations: ["Artist", "Bartender", "Confidence Trickster", "Dilettante", "Entertainer", "Gambler", "Gentleman/lady", "Gunfighter", "Hobo", "Hooker", "Lawyer", "Outlaw", "Pugilist", "Spy"], bonusSkills: ["Appraise", "Art/Craft (any)", "Charm", "Disguise", "Fast Talk", "Gambling", "Law", "Locksmith", "Psychology", "Read Lips", "Rope Use", "Sleight of Hand", "Spot Hidden", "Stealth", "Trap"], talent: 'Scoundrel to The Bone'},
-        "Scholar": { core: ["EDU"], occupations: ["Author", "Butler", "Dilettante", "Doctor", "Gentleman/lady", "Journalist", "Lawyer/Judge", "Librarian", "Merchant", "Politician", "Student/Teacher", "Scientist/Engineer"], bonusSkills: ["Accounting", "Appraise", "Anthropology", "Archaeology", "History", "Language Other (any)", "Law", "Library Use", "Medicine", "Natural World", "Occult", "Psychology", "Science"], talent: 'Um, Actually'},
-        "Steadfast": { core: ["CON"], occupations: ["Butler", "Cowboy/girl", "Craftsperson", "Doctor", "Expressman/woman", "Farmer", "Gentleman/lady", "Gunfighter", "Hired Muscle", "Lawman", "Person of God", "Politician", "Pugilist", "Soldier", "Tribe Member"], bonusSkills: ["Accounting", "Drive Coach/Wagon", "Fighting (any)", "Firearms (Handgun)", "First Aid", "History", "Intimidate", "Law", "Natural World", "Navigate", "Persuade", "Psychology", "Ride", "Spot Hidden", "Survival"], talent: 'Bulwark of Justice'},
-        "Swashbuckler": { core: ["DEX", "APP"], occupations: ["Artist", "Big Game Hunter", "Dilettante", "Entertainer", "Gambler", "Gentleman/lady", "Gunfighter", "Journalist", "Lawman", "Outlaw", "Sailor"], bonusSkills: ["Art/Craft (any)", "Charm", "Climb", "Dodge", "Fighting (any)", "Jump", "Language Other (any)", "Mechanical Repair", "Navigate", "Rope Use", "Stealth", "Swim", "Throw"], talent: 'Dazzling Heroics'},
-        "Thrill Seeker": { core: ["DEX", "POW"], occupations: ["Big Game Hunter", "Bounty Hunter", "Confidence Trickster", "Dilettante", "Entertainer", "Expressman/woman", "Gambler", "Gunfighter", "Hired Muscle", "Hooker", "Outlaw", "Pugilist", "Sailor", "Soldier", "Spy", "Zealot"], bonusSkills: ["Art/Craft (any)", "Charm", "Climb", "Drive Coach/Wagon", "Fast Talk", "Gambling", "Jump", "Mechanical Repair", "Navigate", "Ride", "Stealth", "Survival", "Swim", "Throw"], talent: 'Adrenaline Junkie'},
-        "Two-Fisted": { core: ["STR", "SIZ"], occupations: ["Big Game Hunter", "Bounty Hunter", "Coachman/woman", "Cowboy/girl", "Gunfighter", "Hired Muscle", "Outlaw", "Pugilist", "Scout", "Soldier", "Zealot", "Tribe Member"], bonusSkills: ["Dodge", "Drive Coach/Wagon", "Fighting (Brawl)", "Firearms (any)", "Intimidate", "Listen", "Mechanical Repair", "Spot Hidden", "Swim", "Throw"], talent: 'Get Some!'}
-    };
+        // Data objects (unchanged, but consolidated)
+        const ARCHETYPES = {
+            "Adventurer": { core: ["DEX", "APP"], occupations: ["Archaeologist", "Big Game Hunter", "Bounty Hunter", "Confidence Trickster", "Dilettante", "Entertainer", "Expressman/woman", "Gambler", "Gentleman/lady", "Gunfighter", "Hobo", "Journalist", "Outlaw", "Scout/Mountain Person", "Soldier/Warrior"], bonusSkills: ["Climb", "Drive Coach/Wagon", "First Aid", "Fighting (any)", "Firearms (any)", "Gambling", "Jump", "Language Other (any)", "Mechanical Repair", "Ride", "Stealth", "Survival", "Rope Use", "Swim"], talent: 'Always Onward!' },
+            "Beefcake": { core: ["STR"], occupations: ["Bounty Hunter", "Cowboy/girl", "Entertainer", "Farmer", "Gunfighter", "Hired Muscle", "Lawman", "Outlaw", "Person of God", "Pugilist", "Sailor", "Scout/Mountain Person", "Soldier/warrior", "Tribe Member"], bonusSkills: ["Climb", "Fighting (Brawl)", "Intimidate", "Listen", "Mechanical Repair", "Psychology", "Swim", "Throw"], talent: 'Hard Hitter' },
+            "Bon Vivant": { core: ["SIZ"], occupations: ["Artist", "Author", "Big Game Hunter", "Butler", "Confidence Trickster", "Dilettante", "Entertainer", "Gambler", "Gentleman/lady", "Hobo", "Hooker", "Itinerant Worker", "Librarian", "Merchant", "Politician", "Rancher"], bonusSkills: ["Appraise", "Art/Craft (any)", "Charm", "Fast Talk", "Language Other (any)", "Listen", "Spot Hidden", "Psychology", "Gambling"], talent: 'Living Life!' },
+            "Cold Blooded": { core: ["INT"], occupations: ["Bounty Hunter", "Confidence Trickster", "Doctor", "Gambler", "Gunfighter", "Hired Muscle", "Hooker", "Journalist", "Lawman", "Lawyer/Judge", "Merchant", "Outlaw", "Politician", "Pugilist", "Scientist/Engineer", "Soldier", "Spy", "Zealot"], bonusSkills: ["Art/Craft (Acting)", "Disguise", "Fighting (any)", "Firearms (any)", "First Aid", "Gambling", "History", "Intimidate", "Law", "Listen", "Mechanical Repair", "Psychology", "Stealth", "Survival", "Track", "Trap"], talent: 'All According to Plan' },
+            "Egghead": { core: ["INT", "EDU"], occupations: ["Author", "Craftsperson", "Doctor", "Gambler", "Itinerant Worker", "Journalist", "Lawyer/Judge", "Librarian", "Minor", "Student/Teacher", "Scientist/Engineer"], bonusSkills: ["Anthropology", "Appraise", "Electrical Repair", "First Aid", "Gambling", "Language Other (any)", "Library Use", "Mechanical Repair", "Operate Heavy Machinery", "Science", "Trap"], talent: 'Eureka!' },
+            "Explorer": { core: ["DEX", "POW"], occupations: ["Author", "Big Game Hunter", "Coachman/woman", "Dilettante", "Expressman/woman", "Gentleman/lady", "Hobo", "Itinerant Worker", "Person of God", "Merchant", "Miner", "Sailor", "Student/Teacher", "Scout", "Tribe Member"], bonusSkills: ["Animal Handling", "Anthropology", "Archaeology", "Climb", "Drive Coach/Wagon", "Fighting (Brawl)", "First Aid", "Jump", "Language Other (any)", "Natural World", "Navigate", "Ride", "Rope Use", "Stealth", "Survival", "Track"], talent: 'Born Traveler' },
+            "Femme Fatale": { core: ["APP", "INT"], occupations: ["Artist", "Bartender", "Bounty Hunter", "Confidence Trickster", "Dilettante", "Entertainer", "Gambler", "Gentleman/lady", "Hooker", "Journalist", "Librarian", "Outlaw", "Politician", "Spy"], bonusSkills: ["Art/Craft (Acting)", "Appraise", "Charm", "Disguise", "Drive Coach/Wagon", "Fast Talk", "Fighting (Brawl)", "Firearms (Handgun)", "Gambling", "Listen", "Psychology", "Read Lips", "Rope Use", "Sleight of Hand", "Stealth", "Trap"], talent: 'Irresistible' },
+            "Hard Boiled": { core: ["CON"], occupations: ["Bounty Hunter", "Coachman/woman", "Cowboy/girl", "Farmer", "Gunfighter", "Hired Muscle", "Lawman", "Outlaw", "Person of God", "Pugilist", "Sailor", "Scout", "Soldier", "Zealot"], bonusSkills: ["Fighting (Brawl)", "Firearms (any)", "Drive Coach/Wagon", "Fast Talk", "Intimidate", "Law", "Listen", "Locksmith", "Sleight of Hand", "Spot Hidden", "Rope Use", "Stealth", "Throw"], talent: 'That all you got?' },
+            "Hunter": { core: ["INT", "CON"], occupations: ["Big Game Hunter", "Bounty Hunter", "Cowboy/girl", "Dilettante", "Expressman/woman", "Lawman", "Miner", "Outlaw", "Scout", "Tribe Member", "Zealot"], bonusSkills: ["Animal Handling", "Fighting (any)", "Firearms (any)", "First Aid", "Listen", "Natural World", "Navigate", "Spot Hidden", "Ride", "Rope Use", "Stealth", "Survival", "Swim", "Track", "Trap"], talent: 'No Escape' },
+            "Mystic": { core: ["POW"], occupations: ["Artist", "Confidence Trickster", "Craftsperson", "Doctor", "Entertainer", "Gentleman/lady", "Hobo", "Person of God", "Student/Teacher", "Scientist/Engineer", "Tribe Member", "Zealot"], bonusSkills: ["Art/Craft (any)", "Disguise", "History", "Language Other (any)", "Listen", "Natural World", "Occult", "Psychology", "Science", "Sleight of Hand", "Spot Hidden", "Stealth", "Track"], talent: 'Powers' },
+            "Outsider": { core: ["INT", "CON"], occupations: ["Artist", "Craftsperson", "Dilettante", "Entertainer", "Farmer", "Expressman/woman", "Hobo", "Itinerant Worker", "Miner", "Person of God", "Sailor", "Scout", "Tribe Member", "Zealot"], bonusSkills: ["Art/Craft (any)", "Animal Handling", "Fighting (any)", "First Aid", "Intimidate", "Language Other (any)", "Listen", "Medicine", "Navigate", "Stealth", "Survival (any)", "Track"], talent: 'Unorthodox Methods' },
+            "Rogue": { core: ["DEX", "APP"], occupations: ["Artist", "Bartender", "Confidence Trickster", "Dilettante", "Entertainer", "Gambler", "Gentleman/lady", "Gunfighter", "Hobo", "Hooker", "Lawyer", "Outlaw", "Pugilist", "Spy"], bonusSkills: ["Appraise", "Art/Craft (any)", "Charm", "Disguise", "Fast Talk", "Gambling", "Law", "Locksmith", "Psychology", "Read Lips", "Rope Use", "Sleight of Hand", "Spot Hidden", "Stealth", "Trap"], talent: 'Scoundrel to The Bone' },
+            "Scholar": { core: ["EDU"], occupations: ["Author", "Butler", "Dilettante", "Doctor", "Gentleman/lady", "Journalist", "Lawyer/Judge", "Librarian", "Merchant", "Politician", "Student/Teacher", "Scientist/Engineer"], bonusSkills: ["Accounting", "Appraise", "Anthropology", "Archaeology", "History", "Language Other (any)", "Law", "Library Use", "Medicine", "Natural World", "Occult", "Psychology", "Science"], talent: 'Um, Actually' },
+            "Steadfast": { core: ["CON"], occupations: ["Butler", "Cowboy/girl", "Craftsperson", "Doctor", "Expressman/woman", "Farmer", "Gentleman/lady", "Gunfighter", "Hired Muscle", "Lawman", "Person of God", "Politician", "Pugilist", "Soldier", "Tribe Member"], bonusSkills: ["Accounting", "Drive Coach/Wagon", "Fighting (any)", "Firearms (Handgun)", "First Aid", "History", "Intimidate", "Law", "Natural World", "Navigate", "Persuade", "Psychology", "Ride", "Spot Hidden", "Survival"], talent: 'Bulwark of Justice' },
+            "Swashbuckler": { core: ["DEX", "APP"], occupations: ["Artist", "Big Game Hunter", "Dilettante", "Entertainer", "Gambler", "Gentleman/lady", "Gunfighter", "Journalist", "Lawman", "Outlaw", "Sailor"], bonusSkills: ["Art/Craft (any)", "Charm", "Climb", "Dodge", "Fighting (any)", "Jump", "Language Other (any)", "Mechanical Repair", "Navigate", "Rope Use", "Stealth", "Swim", "Throw"], talent: 'Dazzling Heroics' },
+            "Thrill Seeker": { core: ["DEX", "POW"], occupations: ["Big Game Hunter", "Bounty Hunter", "Confidence Trickster", "Dilettante", "Entertainer", "Expressman/woman", "Gambler", "Gunfighter", "Hired Muscle", "Hooker", "Outlaw", "Pugilist", "Sailor", "Soldier", "Spy", "Zealot"], bonusSkills: ["Art/Craft (any)", "Charm", "Climb", "Drive Coach/Wagon", "Fast Talk", "Gambling", "Jump", "Mechanical Repair", "Navigate", "Ride", "Stealth", "Survival", "Swim", "Throw"], talent: 'Adrenaline Junkie' },
+            "Two-Fisted": { core: ["STR", "SIZ"], occupations: ["Big Game Hunter", "Bounty Hunter", "Coachman/woman", "Cowboy/girl", "Gunfighter", "Hired Muscle", "Outlaw", "Pugilist", "Scout", "Soldier", "Zealot", "Tribe Member"], bonusSkills: ["Dodge", "Drive Coach/Wagon", "Fighting (Brawl)", "Firearms (any)", "Intimidate", "Listen", "Mechanical Repair", "Spot Hidden", "Swim", "Throw"], talent: 'Get Some!' }
+        };
 
-    const OCCUPATIONS = {
-        'Archaeologist': { skillPointsFormula: (edu, dex, pow) => edu * 2 + Math.max(dex * 2, pow * 2), crRange: [6, 60], skills: ['Archaeology', 'History', 'Library Use', 'Spot Hidden', 'Navigate', 'Language Other (any)', 'Anthropology', 'any one other'] },
-        'Artist': { skillPointsFormula: (edu, dex, pow) => edu * 2 + Math.max(dex * 2, pow * 2), crRange: [6, 60], skills: ['Art/Craft (any)', 'History', 'Library Use', 'Psychology', 'Spot Hidden', 'Sleight of Hand', 'any two other'] },
-        'Author': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 30], skills: ['Art (Literature)', 'History', 'Library Use', 'Natural World or Occult', 'Other Language', 'Own Language', 'Psychology', 'any one other'] },
-        'Bartender': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [8, 25], skills: ['Accounting', 'two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)', 'Fighting (Brawl)', 'Listen', 'Psychology', 'Spot Hidden', 'any one other'] },
-        'Big Game Hunter': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [20, 50], skills: ['Firearms', 'Listen or Spot Hidden', 'Natural World', 'Navigate', 'Other Language or Survival (any)', 'Stealth', 'Track', 'Trap'] },
-        'Bounty Hunter': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [9, 30], skills: ['Drive Coach/Wagon', 'Fighting or Firearms (any)', 'one interpersonal (Fast Talk, Charm, Intimidate, or Persuade)', 'Law', 'Psychology', 'Rope Use', 'Track', 'Trap', 'Stealth'] },
-        'Butler': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 40], skills: ['Accounting or Appraise', 'Art/Craft (any, e.g. Cook, Tailor, Barber)', 'First Aid', 'Listen', 'Other Language', 'Psychology', 'Spot Hidden', 'any two other'] },
-        'Coachman/woman': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [10, 40], skills: ['Drive Coach/Wagon', 'two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)', 'Fighting or Firearms (any)', 'Listen', 'Ride', 'Spot Hidden', 'Throw'] },
-        'Confidence Trickster': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [20, 60], skills: ['Appraise', 'Art/Craft (Acting)', 'Charm', 'Disguise', 'Fast Talk', 'Gambling', 'Psychology', 'Sleight of Hand', 'Spot Hidden', 'Trap'] },
-        'Cowboy/girl': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [9, 25], skills: ['Animal Handling', 'Drive Coach/Wagon or Ride', 'Firearms (Rifle/Shotgun or Handgun)', 'First Aid', 'Listen', 'Natural World', 'Rope Use', 'Survival', 'Track'] },
-        'Craftsperson': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 40], skills: ['Art/Craft (any)', 'two other relevant to craft', 'Appraise', 'Electrical Repair', 'Listen', 'Mechanical Repair', 'Spot Hidden', 'any one other'] },
-        'Dilettante': { skillPointsFormula: (edu) => edu * 4, crRange: [50, 99], skills: ['Accounting', 'Appraise', 'Art/Craft (any)', 'Firearms', 'Language Other (any)', 'Ride', 'any one other'] },
-        'Doctor': { skillPointsFormula: (edu) => edu * 4, crRange: [40, 99], skills: ['First Aid', 'Medicine', 'Psychology', 'Science (Biology, Chemistry, Pharmacy, etc.)', 'any two others'] },
-        'Entertainer': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [9, 40], skills: ['Art/Craft (any)', 'Charm', 'Disguise', 'Fast Talk', 'Sleight of Hand', 'any three others'] },
-        'Expressman/woman': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [9, 25], skills: ['Animal Handling', 'Drive Coach/Wagon', 'Firearms (any)', 'Listen', 'Navigate', 'Ride', 'Spot Hidden', 'Survival'] },
-        'Farmer': { skillPointsFormula: (edu) => edu * 2, crRange: [9, 30], skills: ['Animal Handling', 'Art/Craft (Farming)', 'First Aid', 'Natural World', 'Ride', 'Survival', 'Throw', 'any one other'] },
-        'Gambler': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [20, 50], skills: ['Appraise', 'Fast Talk', 'Gambling', 'Listen', 'Sleight of Hand', 'Spot Hidden', 'any two others'] },
-        'Gentleman/lady': { skillPointsFormula: (edu) => edu * 4, crRange: [50, 99], skills: ['Accounting', 'Appraise', 'Art/Craft (any)', 'Drive Coach/Wagon', 'Law', 'Other Language', 'Ride', 'any one other'] },
-        'Gunfighter': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [10, 40], skills: ['Drive Coach/Wagon or Ride', 'Fast Talk or Intimidate', 'Firearms (any)', 'Fighting (Brawl)', 'Listen', 'Psychology', 'Spot Hidden', 'Stealth'] },
-        'Hired Muscle': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [10, 25], skills: ['Fighting (Brawl)', 'Firearms (any)', 'Intimidate', 'Listen', 'Psychology', 'Stealth', 'Survival', 'Throw'] },
-        'Hobo': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [0, 9], skills: ['Listen', 'Navigate', 'Natural World', 'Stealth', 'Survival', 'Track', 'any one other'] },
-        'Hooker': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [9, 25], skills: ['Charm', 'Disguise', 'Fast Talk', 'Psychology', 'Sleight of Hand', 'any two others'] },
-        'Itinerant Worker': { skillPointsFormula: (edu, str) => edu * 2 + str * 2, crRange: [9, 25], skills: ['Art/Craft (any)', 'Climb', 'Electrical Repair or Mechanical Repair', 'First Aid', 'Listen', 'Spot Hidden', 'Throw'] },
-        'Journalist': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 50], skills: ['Art/Craft (Photography or Typing)', 'Fast Talk', 'History', 'Library Use', 'Listen', 'Own Language', 'Persuade', 'Psychology'] },
-        'Lawman': { skillPointsFormula: (edu, con) => edu * 2 + con * 2, crRange: [10, 40], skills: ['Firearms (Handgun)', 'Fighting (Brawl)', 'Intimidate', 'Law', 'Listen', 'Persuade', 'Psychology', 'Spot Hidden', 'Ride'] },
-        'Lawyer/Judge': { skillPointsFormula: (edu) => edu * 4, crRange: [20, 80], skills: ['Fast Talk', 'Law', 'Library Use', 'Own Language', 'Persuade', 'Psychology', 'any one other'] },
-        'Librarian': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 40], skills: ['Accounting', 'Anthropology or Archaeology', 'History', 'Library Use', 'Occult', 'Own Language', 'any one other'] },
-        'Merchant': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [20, 70], skills: ['Accounting', 'Appraise', 'Fast Talk', 'Listen', 'Persuade', 'Psychology', 'Spot Hidden', 'any one other'] },
-        'Miner': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [9, 25], skills: ['Climb', 'Electrical Repair or Mechanical Repair', 'Jump', 'Listen', 'Navigate', 'Ride', 'Spot Hidden', 'Survival'] },
-        'Outlaw': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [0, 9], skills: ['Drive Coach/Wagon or Ride', 'Firearms (any)', 'Fighting (any)', 'Fast Talk or Intimidate', 'Mechanical Repair', 'Stealth', 'Survival'] },
-        'Person of God': { skillPointsFormula: (edu, pow) => edu * 2 + pow * 2, crRange: [9, 40], skills: ['History', 'Library Use', 'Listen', 'Medicine', 'Persuade', 'Psychology', 'any two others'] },
-        'Politician': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [30, 80], skills: ['Fast Talk', 'Law', 'Persuade', 'Psychology', 'History', 'Own Language', 'any two others'] },
-        'Pugilist': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [9, 25], skills: ['Dodge', 'Fighting (Brawl)', 'First Aid', 'Intimidate', 'Listen', 'Psychology', 'any two others'] },
-        'Rancher': { skillPointsFormula: (edu, str) => edu * 2 + str * 2, crRange: [10, 40], skills: ['Animal Handling', 'Appraise', 'Art/Craft (any)', 'Drive Coach/Wagon', 'Listen', 'Natural World', 'Ride', 'Rope Use', 'Survival', 'Track'] },
-        'Sailor': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [9, 25], skills: ['Climb', 'Fighting (Brawl)', 'Listen', 'Navigate', 'Jump', 'Mechanical Repair', 'Rope Use', 'Swim', 'Throw'] },
-        'Scout/Mountain Person': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [9, 30], skills: ['Climb', 'Listen', 'Natural World', 'Navigate', 'Ride', 'Spot Hidden', 'Stealth', 'Survival', 'Track'] },
-        'Scientist/Engineer': { skillPointsFormula: (edu) => edu * 4, crRange: [20, 80], skills: ['Electrical Repair', 'Library Use', 'Mechanical Repair', 'Science (any)', 'any four others'] },
-        'Soldier/Warrior': { skillPointsFormula: (edu, dex, str, con) => edu * 2 + Math.max(dex * 2, str * 2, con * 2), crRange: [9, 30], skills: ['Dodge', 'Fighting (any)', 'Firearms (any)', 'Intimidate', 'Listen', 'Stealth', 'Survival', 'any one other'] },
-        'Spy': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [9, 50], skills: ['Disguise', 'Fast Talk', 'Listen', 'Persuade', 'Psychology', 'Read Lips', 'Sleight of Hand', 'Stealth'] },
-        'Student/Teacher': { skillPointsFormula: (edu, int) => edu * 2 + int * 2, crRange: [9, 25], skills: ['Appraise', 'History', 'Language Other', 'Library Use', 'Occult', 'Own Language', 'Persuade', 'Psychology', 'Science'] },
-        'Tribe Member': { skillPointsFormula: (edu, pow) => edu * 2 + pow * 2, crRange: [9, 25], skills: ['Listen', 'Natural World', 'Navigate', 'Occult', 'Stealth', 'Survival', 'Swim', 'Track'] },
-        'Zealot': { skillPointsFormula: (edu, pow, con) => edu * 2 + Math.max(pow * 2, con * 2), crRange: [9, 25], skills: ['History', 'Intimidate', 'Listen', 'Persuade', 'Psychology', 'any two others'] },
-        'Miner': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [5, 20], skills: ['Climb', 'Operate Heavy Machinery', 'Spot Hidden', 'Mechanical Repair', 'Natural World', 'any two other'] }
-    };
-    const HINDRANCES = {
-        'Blind (7)': {value: 7, desc: 'You can’t see shit! You suffer -80% to any skill that requires sight (Most skills, but Keeper’s discretion). You increase the difficulty level of Spot Hidden rolls by 2.'},
-        'Ailin’ (6)': {value: 6, desc: 'You suffer from an uncurable chronic illness, be it cholera, tuberculosis or lead poisoning. Your time is limited, so make the best of it. Your ailment will eventually kill you, no matter what. You have disadvantage to all STR and CON rolls. You permanently have the Dying condition (The difficulty level of all your rolls is increased 1 if you reach 0 HP or have a major wound). At the beginning of each session (before recovering Luck), you must take a LUCK and CON roll. If you fail either, your condition worsens. You lower your STR and CON by D10. A critical failure means you lose 2D10. Once your STR or CON reaches 0, you die.'},
-        'Cursed (5)': {value: 5, desc: 'Whether real or imagined, you truly feel like you’ve been cursed. Nothing goes your way, in fact, it often seems Lady Luck enjoys mocking you. Half your LUCK. Whenever you recover LUCK, half the result. When you fumble, the result is always really bad (Keeper’s discretion). Animals do not like you and will often react aggressively to you.'},
-        'Thin-Skinned (5)': {value: 5, desc: 'Some people just aren’t cut out for the rough life of the West. Whenever you suffer damage, you suffer 1 additional damage. When making opposed rolls, always suffer disadvantage (Including fighting back during combat).'},
-        'Grim Servant O’ Death (4)': {value: 4, desc: 'Wherever you go, death follows. You must be one of the Grim Reaper’s favorites! Whenever you fumble, you target an ally (Death gets real creative). If there are no allies, you target an innocent bystander. Hurting everyone you meet, and innocents will lower your sanity bit by bit and make forming connections real difficult.'},
-        'Death Wish (4)': {value: 4, desc: 'Your life ain’t worth much and you know it. To flee, you must succeed in a Hard POW roll or stay in the fight/situation (yes that includes avalanches, tornadoes and whatever else). You cannot use Luck to avoid certain death.'},
-        'Night Terrors (4)': {value: 4, desc: 'To say you have bad dreams is a severe understatement. You must take a Hard POW roll at the beginning of each session. If you fail, you can choose to either lose D6 sanity points or suffer disadvantage to all rolls until next session.'},
-        'Maimed (4)': {value: 4, desc: 'Lost that during the war partner? Start with a serious, detrimental, permanent injury (Lost leg, arm, eye, etc.).'},
-        'Pacifist (4)': {value: 4, desc: 'You despise violence, even when it is necessary. To partake in any violence (if justifiable), you must succeed in an Extreme POW roll. To retaliate against violence (if justifiable), you must succeed in a Hard POW roll.'},
-        'Loco (3)': {value: 3, desc: 'You never were all there, were you partner? When you roll to see how much sanity you lose, roll the result twice and pick the highest one.'},
-        'Heroic (3)': {value: 3, desc: 'As a noble soul, you never say no to a person in need. You can’t let innocents hurt or suffer, you will always intervene or help them, free of charge of course. You do not lie, cheat or act outside the law, unless the law itself is unjust (Keeper’s discretion). Letting innocents getting hurt is a good way to lose sanity.'},
-        'Tenderfoot (3)': {value: 3, desc: 'Every little ol’ cut and scrape makes you cry for your mama. Whenever you are not at full HP, you suffer -10% to all rolls. Whenever you have a major wound, the difficulty level of all your rolls is increased by 1 (does not stack when dying).'},
-        'Trouble Magnet (3)': {value: 3, desc: 'Watch out for bumbling butterfingers over here. You increase your fumble chance for all rolls by 5%.'},
-        'Bloodthirsty (3)': {value: 3, desc: 'Unlike the Grim Servant of Death, you’re not unlucky, you just enjoy seeing the light leave their eyes. You never take prisoners or just wing your opponents, which creates a lot of enemies and makes the law take notice real quick. Whenever you want to not kill a person (for the smallest slight), you must take a Hard POW roll or kill them anyway, usually before you can learn any precious information from them. Not killing is a good way to lose sanity.'},
-        'Yellow-Belly (3)': {value: 3, desc: 'Not everyone’s got cold ice-water in their veins. You increase the difficulty level of POW rolls by 1. Intimidation rolls always counts as one level higher of success against you.'},
-        'Mute (3)': {value: 3, desc: 'Not the verbose kind of a fella, hey partner? You cannot communicate by talking in any language (You cannot raise alarms, formulating plans in combat might be harder, etc.....). You cannot speak any languages. You increase the difficulty level of Charm, Fast Talk and Persuade rolls by 1.'},
-        'Big Britches (3)': {value: 3, desc: 'Fan of extra lards with your beans huh? For the purposes of being hit, increase your Build by 1. Your Move Rate is lowered by 1 (Even when on horseback). When rolling to maintain stamina (during chases), you increase the difficulty level by 1 (Unless you get real creative!).'},
-        'Phobia (3)': {value: 3, desc: 'Why are you hiding, it’s just a rat?! You gain a random phobia (or determined if discussed with Keeper). When you encounter your phobia, you lose 2D10 sanity points and automatically count as suffering from a Bout of Madness.'},
-        'Drunkard (2/3)': {value: 3, desc: 'Wherever you go, you’re the town drunk! When you can drink, you do, unless you succeed in a Hard/Extreme POW roll. When you drink, you always do so excessively.'},
-        'Gamblin’ Man (2/3)': {value: 3, desc: 'How about one more round partner? When you can gamble, you do, unless you succeed in a Hard/Extreme POW roll. When you do start gambling, you can’t help but push your luck (Who needs a horse and gun anyway?).'},
-        'All Thumbs (2)': {value: 2, desc: 'Either you wash your hands in slippin’ oil every morning or you just real clumsy. You suffer disadvantage to all Sleight of Hand, Locksmith, Operate Heavy Machinery and repair rolls. You cannot Quick Reload.'},
-        'Obligation (2)': {value: 2, desc: 'Whether it’s debt or a family you have to take care of, you have responsibilities you must attend to. Discuss the exact nature of your obligation with your Keeper. Each week, you will have to lose credit, sanity or any other appropriate resource to represent your time spent on your obligations (A cut of your robbery earnings, money spend on sending constant letters back home, losing sanity when you don’t attend to your obligations, being vulnerable when tending to these obligations, etc.…).'},
-        'Shamed (2)': {value: 2, desc: 'Some past action haunts you and some people remember… You must choose a place or faction that has shamed you for some reason or other. You are not well-treated or liked in this place. They will most likely shoot on sight if they get a good look at you!'},
-        'Ugly (2)': {value: 2, desc: 'Now that is a face only a mama could love! You increase the difficulty level of APP, Charm and Persuade rolls by 1.'},
-        'Lyin’ Eyes (2)': {value: 2, desc: 'Lies just don’t come easy to you and a sharp eye can tell. You suffer disadvantage when rolling for Disguises, Fast Talk, Gamble, Persuade, Intimidate and Charm.'},
-        'Talisman (2)': {value: 2, desc: 'To call on your special talents, you need your lucky deck of cards (or staff, bible, cane, etc.…). Only a character with the Powers talent (see Mystic archetype) can take this hindrance. You cannot use your powers without your talisman on you.'},
-        'Old Ways Oath (2)': {value: 2, desc: 'You made an oath to forego modern technology and firearms to honor the land itself. You cannot under any circumstance, use guns or “modern” technology (Keeper’s discretion).'},
-        'Mean (2)': {value: 2, desc: 'Who pissed in your coffee?! You do not do things for free. Your reputation will usually suffer, even when you do the right thing! You suffer disadvantage to Charm and Persuade rolls.'},
-        'Wanted (2)': {value: 2, desc: 'Whether you actually did it or not, the law thinks you did! You are wanted for a major crime (sentence being death) by one of the following factions (Your choice): The United Federal States of America, The Southern Confederate States of America, The Native Alliance or The Railway Association.'},
-        'Miser (2)': {value: 2, desc: 'Scrooge’s got nothing on you! You half your current Spending Level (at all times). Whenever you wish to part with cash, you must succeed a Hard POW roll or decide to not spend it (must wait until next session to try again).'},
-        'Arrogant (2)': {value: 2, desc: 'You don’t think you’re the best, you ARE the best and you can’t handle it when someone proves otherwise. Whenever you flee from combat, back down or someone bests you in any form, you lose D6 sanity. When you defeat a worthy opponent (Keeper’s discretion) you must take a Hard INT roll. If you fail, you let them live (You will even fight allies who try to intervene).'},
-        'Bad Eyes (2)': {value: 2, desc: 'You just can’t see that good, unless you got yourself a pair of fancy pants spectacles. When you shoot beyond your Point Blank range, you suffer disadvantage to hit. You increase the difficulty level of Spot Hidden rolls by 1. You ignore these penalties if you wear glasses (2-10$), which break if you suffer a Major Wound or can break if you fumble.'},
-        'Laws O’ The West (2)': {value: 2, desc: 'You have a strict code that you won’t break for any reason. You keep your word, do not betray people’s trust and do not abuse or kill your enemies. Whenever you act in an un-gentleman or -ladylike behavior (Keeper’s discretion), you lose sanity (This includes killing outside of strict self-defense).'},
-        'High Fallutin’ (2)': {value: 2, desc: 'You turn your nose up so high you might drown when it rains. You increase the difficulty level of Charm, Disguise, Fast Talk and Persuade by 1 when talking to those with a lower Credit Rating than yourself. You lose sanity points if your Spending Level is not at a wealthy level.'},
-        'Hesitant (2)': {value: 2, desc: 'You always overthink your move, partner. You suffer disadvantage when determining DEX order at the beginning of combat.'},
-        'Sensitive Constitution (1)': {value: 1, desc: 'Your body ain’t got the temperament for nature and it ails. When resisting the effects of poisons, diseases or the weather, you count as having rolled 1 level of success lower.'},
-        'Loose Lips (1)': {value: 1, desc: 'You just love blabbin’, to anyone about anything, even if it’s better to keep your mouth shut sometimes. You can’t help but divulge your secrets and escapades to anyone you meet on a INT roll (What crimes you committed, plan on committing, where you’re heading, who you dislike, who you like, etc.....).'},
-        'Can’t Swim (1)': {value: 1, desc: 'Whenever you hit the water, you sink like a rock. When submerged in water, you immediately start drowning.'},
-        'Clueless (1)': {value: 1, desc: 'You don’t pay much attention to anything not in your direct vicinity. You suffer disadvantage to all EDU and relevant skill rolls (Keeper’s discretion, but to be discussed at character creation). Affects anything the character is not specialized in (A scholar might suffer disadvantage to Survival, a hermit might suffer disadvantage to Science and Anthropology, a gunslinger to Library Use and Law, etc.....).'},
-        'Curious (1)': {value: 1, desc: 'It killed the cat and might just kill you, but you can’t help yourself! To resist temptation to peek at what you should not peak, to go where you should not go or ask when you should not ask, you must take a combined INT and POW roll. Not satisfying your curiosity might cause you to lose sanity points (Keeper’s discretion).'},
-        'Illiterate (1)': {value: 1, desc: 'You cannot read or write and math ain’t your strong suit neither. You cannot read or write in any language (affects all relevant skills, Kepper’s discretion).'},
-        'Hankerin’ Habit (1)': {value: 1, desc: 'You have a consistent, if not strange, habit that you can’t help but do everyday, in the same exact way. Decide what your daily habit is (Drinking the same drink every morning at 8am, rolling dice when you wake up or brushing your horse before you go to bed). This habit always leaves you vulnerable and makes you predictable.'},
-        'Hard of Hearin’ (1)': {value: 1, desc: 'WHAAAAT?! You increase the difficulty level of Listen rolls by 1.'},
-        'Impulsive (1)': {value: 1, desc: 'True daredevil ain’t yeah, always leaping before you look! You always escalate a situation if you fail a combined INT and POW roll. This means you turn a disagreement into a violent disagreement, a friendly cuss out into a serious insult, a bar-room brawl into a deadly knife fight.'},
-        'Mild Mannered (1)': {value: 1, desc: 'Clean, polite and usually overly educated, you are not the most threatening individual. You suffer disadvantage to Intimidate and Fast Talk.'},
-        'Vow (1)': {value: 1, desc: 'You swore you would see this through, and you will, no matter what. You must constantly pursue to accomplish this vow, as not doing so takes its toll on your sanity. Discuss details with your Keeper.'},
-        'Heavy Sleeper (1)': {value: 1, desc: 'A thunderstorm from hell won’ even wake you up once you close your eyes. When sleeping, anyone sneaking up on you counts as rolling a critical success. You will not wake from your slumber, unless someone attacks you and even then, you will wake up after they at least damaged you!'},
-        'Slowpoke (1)': {value: 1, desc: 'Molasses on a cold day move faster than you. You reduce your Move Rate by 1 (on foot).'},
-        'Superstitious (1)': {value: 1, desc: 'Owls never hoot “just for the Hell of it,” and black cats should be shot if they try to cross your path. Everyone knows that! You suffer double the loss of sanity from strange encounters.'},
-        'Tongue-Tied (1)': {value: 1, desc: 'You always flub your one-liners and insults, better let your gun do the barking. You suffer -10% to Charm, Fast Talk, Intimidate, Persuade and Languages.'}
-    };
-    const TALENTS = {
-        'True Grit (7)': {value: 7, desc: 'Backing down just ain’t in your blood partner! At the beginning of each session, your recover POW in the same way you do Luck. You have advantage to all POW rolls.'},
-        'Fast as Lightnin’ (6)': {value: 6, desc: 'Faster than their own shadow this one. You count all DEX rolls as 1 level of success higher. Unless someone else has this talent, you always go first in any combat. Unless someone else has this talent, gain an additional action in the first round of combat.'},
-        'Meanest of the Bunch (5)': {value: 5, desc: 'You are one of the meanest hombre’s to walk the West. Whenever you do damage you roll an additional damage die of the same type (So a cattleman revolver would deal 3D6 damage in your hands, rather than 2D6). Includes an additional Damage Bonus die when brawling.'},
-        'Reputation (5)': {value: 5, desc: 'You already earned yourself quite the reputation in these parts’ hombre. You start with the “Depend who’s Asking” reputation and a nickname of choice.'},
-        'Tough as Nails (4)': {value: 4, desc: 'You chew razor-blades for breakfast and persevere no matter what. You count all CON rolls as 1 level of success higher. You only ever take base damage, ignoring brutal and vicious damage (Though extreme damage still applies).'},
-        'Veteran o’ The West (4)': {value: 4, desc: 'You may distribute an additional 50 points in any Characteristic or skill (still can’t go over their limits).'},
-        'Guts (3)': {value: 3, desc: 'You got some real sand in ya! You increase the success level of POW rolls by 1. Intimidation rolls always counts as one level lower of success against you.'},
-        'Dinero (3)': {value: 3, desc: 'Money talks, it just so happens you talk a lot. You increase your credit rating by 1 level. You can always wire “home” to ask for some money. With enough time, collateral and excuses, you can always get your hands on some extra cash (Keeper’s discretion).'},
-        'Duelist (3)': {value: 3, desc: 'Maybe not the fastest gun in the West, but you have won your fair share of duels. During a duel, you have advantage to all rolls.'},
-        'Hip-Shooter (3)': {value: 3, desc: 'Unlike most, you can slap your gun fast and accurately. When levering or fanning, you suffer -5% to each consecutive shot, rather than -10%.'},
-        'Level-Headed (3)': {value: 3, desc: 'Any gunman knows speed is overrated compared to keeping your cool. Opponents do not get the Outnumbered bonus against you. At the beginning of each of your turns, you may choose to ignore one penalty you are suffering from (Keeper’s discretion).'},
-        'Friends in High Places (3)': {value: 3, desc: 'It ain’t about who you know, but who knows you. Discuss with the Keeper the exact nature of your benefactor (A politician, military captain, a sherif, newspaper editor, etc.…). Your benefactor needs to be a powerful figure, someone with the means to help you out in most situations (though their patience is not endless). They can either have a large sphere of influence (can help you almost anywhere) with more limited powers or a smaller sphere of influence with more direct powers.'},
-        'Born Killer (3)': {value: 3, desc: 'You just got a talent for killin’ folk. You can re-roll a damage die each time you cause damage (Can be a DB die).'},
-        'Sharpshooter (3)': {value: 3, desc: 'Hell, you can shoot a gnat’s ass off from a hundred yards! As long as you do not move, you increase the success level of your ranged hits by 1 when using rifles (not applicable in duels).'},
-        'Silver-Tongued (3)': {value: 3, desc: 'You truly have a gift for words, an endless cascade of grammatical poetry! You have advantage to all Charm, Fast talk, Language and Persuade rolls.'},
-        'Wilderness Man (3)': {value: 3, desc: 'They call you wild, but really you just make the great outdoors civilized! You have advantage all Natural World, Navigate, Survival, Track and Trap rolls. Travelling through difficult terrain does not slow you down.'},
-        'Thick-Skinned (3)': {value: 3, desc: 'You can handle more than a little pain. Whenever you suffer damage, you subtract D3 from the received damage (for each individual instance, aka per bullet or stab wound).'},
-        'Agent (2)': {value: 2, desc: 'You don’t work alone partner. You might have to do some work for whoever’s above you, but at least you can count on some support from time to time. You work for one of the following factions (Your choice): The United Federal States of America, The Southern Confederate States of America, The Native Alliance or The Railway Association. You may ask reasonable support from them (Funds, military aid, gear, etc....), but will have to work for their benefit and report to them.'},
-        'Born in The Saddle (2)': {value: 2, desc: 'You spent so much time on horseback or with reins in your hand, people might just think your half-horse yourself. You have advantage on all riding and driving rolls (including combined rolls involving either).'},
-        'Brawny (2)': {value: 2, desc: 'Your mama been feeding you well! You have advantage to STR and SIZ rolls.'},
-        'Eagle Eyes (2)': {value: 2, desc: 'You increase the success level of Spot Hidden rolls by 1. You ignore the penalties to hit from weather effects.'},
-        'Fisticuffs (2)': {value: 2, desc: 'Nothing like a dozen saloon fights to teach you what’s what. Opponents do not get the Outnumbered and Armed vs Unarmed bonus against you in melee. In melee you can re-roll 1 DB die each time you cause damage.'},
-        'Deadeye (2)': {value: 2, desc: 'Throats, eyes and hearts are the only thing worth shooting at. You cause brutal damage with ranged weapons.'},
-        'Loyal Companion (2/3)': {value: 3, desc: 'Zoro had Tornado, so what’s your loyal pet/mount called? Discuss with the GM what type of animal you would want, with what traits and talents. A cat, dog or parrot count as 2, but a horse, bear or buffalo will most likely be a 3.'},
-        'Tinkerer (2)': {value: 2, desc: 'You have advantage to all Locksmith, Operate Heavy Machinery and repair rolls.'},
-        'Nerves O’ Steel (2)': {value: 2, desc: 'Nothing rattles you. Well, almost nothing. You have advantage to POW rolls. When you lose sanity, you only lose half.'},
-        'Nimble (2)': {value: 2, desc: 'Rollin’ and jumpin’ are just second nature to you. Useful in a gunfight that. When you dive for cover, you can still move and do not suffer disadvantage to your next roll.'},
-        'Purty (2)': {value: 2, desc: 'What’s cookin’ good lookin’? You have advantage to APP and Charm rolls.'},
-        'Quickdraw (2)': {value: 2, desc: 'Not quite fast, but quite quick. You gain +50% DEX roll to determine who goes first in combat (including duels).'},
-        'Big Swings (2)': {value: 2, desc: 'Your Damage Bonus causes brutal damage.'},
-        'Speed Loader (2)': {value: 2, desc: 'When you Quick Reload, load DEX/10 bullets or shells in your gun and shoot (with no disadvantage).'},
-        'Ambidextrous (1)': {value: 1, desc: 'Both hands, equally nimble. You do not suffer penalties for shooting with your off-hand.'},
-        'Animal Lover (1)': {value: 1, desc: 'Animals can sense your good nature. You count all Animal Handling rolls as 1 level of success higher. You may attempt to calm down aggressive animals with an Animal Handling roll (Keeper’s discretion).'},
-        'Belongin’s (1)': {value: 1, desc: 'Whether it’s a lucky rabbit’s foot or your daddy’s war pistol, you did not walk into the frontier empty-handed. In addition to anything you might buy, you may choose to own a special item. Discuss the exact nature of what you want with your Keeper (About 15$ limit).'},
-        'Eavesdropper (1)': {value: 1, desc: 'You increase the success level of Listen rolls by 1.'},
-        'Gallows Humor (1)': {value: 1, desc: 'Some people just laugh at the Grim Reaper, or at least at some of his irony. If you lose sanity (without triggering a bout of madness) you can roll Charm or Fast Talk. If you succeed, you only lose half of your sanity and if your allies can hear, they only lose half.'},
-        'Card Sharp (1)': {value: 1, desc: 'Little bit of talent, little bit of cheating and voila! You have advantage on Gamble and Sleight of Hand rolls.'},
-        'Keen (1)': {value: 1, desc: 'You notice the little things. You have advantage to Spot Hidden, Track and Listen.'},
-        'Kemosabe (1)': {value: 1, desc: 'You travelled enough to know smart folk adapt themselves to their surroundings. Do not suffer (social) penalties when interacting with a group as an “outsider” (A northerner interacting with southerners, a native interacting with non-natives, an atheist interacting with religious folk, etc..).'},
-        'Fate’s Favored (1/2/3)': {value: 3, desc: 'Lady luck ain’t no fickle mistress to you, but a loyal spouse. Gain +10/+20/+30 Luck points to your maximum (Cannot bring it over the maximum).'},
-        'Fleet-Footed (1)': {value: 1, desc: 'You gain +1 to your Move Rate (on foot).'},
-        'Light Sleeper (1)': {value: 1, desc: 'The slightest twig-crack is enough for you shoot-awake. When sleeping, anyone sneaking up on you must succeed a Hard stealth roll. You wake up instantly, meaning you roll initiative in the same round if you do!'},
-        'Locked and Loaded (1)': {value: 1, desc: 'No matter when, what, who or where, you’re always ready. In the first round of combat, you cannot fumble.'},
-        'Iron Liver (1)': {value: 1, desc: 'If your liver could absorb bullets like it does whiskey, you’d be immortal. When you take a CON roll to resist the effects of alcohol, you always count your roll as 1 level of success higher.'},
-        'Gift of Gab (1)': {value: 1, desc: 'You got a real knack for entertaining and story-telling. You count all Fast Talk rolls as 1 level of success higher.'},
-        'Evil Eye (1)': {value: 1, desc: 'Your eyes just got that killer’s edge. You have advantage to Intimidation rolls. In a duel, you count your roll during the Stare Down as 1 level of success higher.'},
-        'Luck O’ The Irish (1)': {value: 1, desc: 'Some folks are just born (somewhat) lucky. When you decide to use “My Hat!”, you lose D3 slots worth of items, rather than D6.'},
-        'Mule Man (1)': {value: 1, desc: 'You got that strong, good for haulin’ physique! You can carry an additional 3 slots.'},
-        'War Cry (1)': {value: 1, desc: 'A blood-curdling yell that emboldens you and terrifies opponents. You roll Intimidation, against which opponents within your STR/10 spaces may roll Intimidation or POW. If you win, opponents suffer disadvantage to their next actions. Can only be used once per encounter.'},
-        'Ruthless (1)': {value: 1, desc: 'You done worse than most and aren’t easily impressed. You do not lose sanity for killing, torturing or seeing gruesome sights.'}
-    };
-    
-    const ALL_SKILLS = {
-        'Accounting': { base: 5 }, 'Animal Handling': { base: 5 }, 'Anthropology': { base: 1 }, 'Appraise': { base: 5 },
-        'Archaeology': { base: 1 }, 'Art/Craft (any)': { base: 5 }, 'Charm': { base: 15 }, 'Climb': { base: 20 },
-        'Credit Rating': { base: 0 }, 'Demolitions': { base: 1 }, 'Disguise': { base: 5 }, 'Dodge': { base: 0 },
-        'Drive Coach/Wagon': { base: 20 }, 'Electrical Repair': { base: 0 }, 'Fast Talk': { base: 5 },
-        'Fighting (any)': { base: 25 }, 'Firearms (any)': { base: 20 }, 'First Aid': { base: 30 }, 'Gambling': { base: 10 },
-        'History': { base: 5 }, 'Intimidate': { base: 15 }, 'Jump': { base: 20 }, 'Language Own': { base: 0 },
-        'Language Other': { base: 0 }, 'Law': { base: 5 }, 'Library Use': { base: 20 }, 'Listen': { base: 20 },
-        'Locksmith': { base: 1 }, 'Mechanical Repair': { base: 10 }, 'Medicine': { base: 1 }, 'Natural World': { base: 20 },
-        'Navigate': { base: 10 }, 'Occult': { base: 5 }, 'Operate Heavy Machinery': { base: 1 }, 'Persuade': { base: 10 },
-        'Psychology': { base: 10 }, 'Read Lips': { base: 1 }, 'Ride': { base: 20 }, 'Rope Use': { base: 5 },
-        'Science (any)': { base: 1 }, 'Sleight of Hand': { base: 10 }, 'Spot Hidden': { base: 25 }, 'Stealth': { base: 20 },
-        'Survival': { base: 10 }, 'Swim': { base: 20 }, 'Throw': { base: 20 }, 'Track': { base: 10 },
-        'Trap': { base: 10 },
-        'Medium': { base: 1 }, 'Telekinesis': { base: 1 }, 'Shamanic Magic': { base: 1 }, 'Witchcraft': { base: 1 }
-    };
-    
-    const charList = ['STR', 'CON', 'DEX', 'POW', 'APP', 'EDU', 'INT', 'SIZ'];
-    
-    let character = {
-        archetype: null,
-        occupation: null,
-        characteristics: {},
-        skills: {},
-        talents: [],
-        hindrances: [],
-        age: null,
-        creditRating: 0,
-        talentPoints: 0
-    };
-    
-    let currentStep = 1;
-    let coreCharacteristic = null;
-    let coreRollValue = 0;
-    let totalCharPoints = 460;
-    let skillPointTotals = {};
+        const OCCUPATIONS = {
+            'Archaeologist': { skillPointsFormula: (edu, dex, pow) => edu * 2 + Math.max(dex * 2, pow * 2), crRange: [6, 60], skills: ['Archaeology', 'History', 'Library Use', 'Spot Hidden', 'Navigate', 'Language Other (any)', 'Anthropology', 'any one other'] },
+            'Artist': { skillPointsFormula: (edu, dex, pow) => edu * 2 + Math.max(dex * 2, pow * 2), crRange: [6, 60], skills: ['Art/Craft (any)', 'History', 'Library Use', 'Psychology', 'Spot Hidden', 'Sleight of Hand', 'any two other'] },
+            'Author': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 30], skills: ['Art (Literature)', 'History', 'Library Use', 'Natural World or Occult', 'Other Language', 'Own Language', 'Psychology', 'any one other'] },
+            'Bartender': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [8, 25], skills: ['Accounting', 'two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)', 'Fighting (Brawl)', 'Listen', 'Psychology', 'Spot Hidden', 'any one other'] },
+            'Big Game Hunter': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [20, 50], skills: ['Firearms', 'Listen or Spot Hidden', 'Natural World', 'Navigate', 'Other Language or Survival (any)', 'Stealth', 'Track', 'Trap'] },
+            'Bounty Hunter': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [9, 30], skills: ['Drive Coach/Wagon', 'Fighting or Firearms (any)', 'one interpersonal (Fast Talk, Charm, Intimidate, or Persuade)', 'Law', 'Psychology', 'Rope Use', 'Track', 'Trap', 'Stealth'] },
+            'Butler': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 40], skills: ['Accounting or Appraise', 'Art/Craft (any, e.g. Cook, Tailor, Barber)', 'First Aid', 'Listen', 'Other Language', 'Psychology', 'Spot Hidden', 'any two other'] },
+            'Coachman/woman': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [10, 40], skills: ['Drive Coach/Wagon', 'two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)', 'Fighting or Firearms (any)', 'Listen', 'Ride', 'Spot Hidden', 'Throw'] },
+            'Confidence Trickster': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [20, 60], skills: ['Appraise', 'Art/Craft (Acting)', 'Charm', 'Disguise', 'Fast Talk', 'Gambling', 'Psychology', 'Sleight of Hand', 'Spot Hidden', 'Trap'] },
+            'Cowboy/girl': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [9, 25], skills: ['Animal Handling', 'Drive Coach/Wagon or Ride', 'Firearms (Rifle/Shotgun or Handgun)', 'First Aid', 'Listen', 'Natural World', 'Rope Use', 'Survival', 'Track'] },
+            'Craftsperson': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 40], skills: ['Art/Craft (any)', 'two other relevant to craft', 'Appraise', 'Electrical Repair', 'Listen', 'Mechanical Repair', 'Spot Hidden', 'any one other'] },
+            'Dilettante': { skillPointsFormula: (edu) => edu * 4, crRange: [50, 99], skills: ['Accounting', 'Appraise', 'Art/Craft (any)', 'Firearms', 'Language Other (any)', 'Ride', 'any one other'] },
+            'Doctor': { skillPointsFormula: (edu) => edu * 4, crRange: [40, 99], skills: ['First Aid', 'Medicine', 'Psychology', 'Science (Biology, Chemistry, Pharmacy, etc.)', 'any two others'] },
+            'Entertainer': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [9, 40], skills: ['Art/Craft (any)', 'Charm', 'Disguise', 'Fast Talk', 'Sleight of Hand', 'any three others'] },
+            'Expressman/woman': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [9, 25], skills: ['Animal Handling', 'Drive Coach/Wagon', 'Firearms (any)', 'Listen', 'Navigate', 'Ride', 'Spot Hidden', 'Survival'] },
+            'Farmer': { skillPointsFormula: (edu) => edu * 2, crRange: [9, 30], skills: ['Animal Handling', 'Art/Craft (Farming)', 'First Aid', 'Natural World', 'Ride', 'Survival', 'Throw', 'any one other'] },
+            'Gambler': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [20, 50], skills: ['Appraise', 'Fast Talk', 'Gambling', 'Listen', 'Sleight of Hand', 'Spot Hidden', 'any two others'] },
+            'Gentleman/lady': { skillPointsFormula: (edu) => edu * 4, crRange: [50, 99], skills: ['Accounting', 'Appraise', 'Art/Craft (any)', 'Drive Coach/Wagon', 'Law', 'Other Language', 'Ride', 'any one other'] },
+            'Gunfighter': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [10, 40], skills: ['Drive Coach/Wagon or Ride', 'Fast Talk or Intimidate', 'Firearms (any)', 'Fighting (Brawl)', 'Listen', 'Psychology', 'Spot Hidden', 'Stealth'] },
+            'Hired Muscle': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [10, 25], skills: ['Fighting (Brawl)', 'Firearms (any)', 'Intimidate', 'Listen', 'Psychology', 'Stealth', 'Survival', 'Throw'] },
+            'Hobo': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [0, 9], skills: ['Listen', 'Navigate', 'Natural World', 'Stealth', 'Survival', 'Track', 'any one other'] },
+            'Hooker': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [9, 25], skills: ['Charm', 'Disguise', 'Fast Talk', 'Psychology', 'Sleight of Hand', 'any two others'] },
+            'Itinerant Worker': { skillPointsFormula: (edu, str) => edu * 2 + str * 2, crRange: [9, 25], skills: ['Art/Craft (any)', 'Climb', 'Electrical Repair or Mechanical Repair', 'First Aid', 'Listen', 'Spot Hidden', 'Throw'] },
+            'Journalist': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 50], skills: ['Art/Craft (Photography or Typing)', 'Fast Talk', 'History', 'Library Use', 'Listen', 'Own Language', 'Persuade', 'Psychology'] },
+            'Lawman': { skillPointsFormula: (edu, con) => edu * 2 + con * 2, crRange: [10, 40], skills: ['Firearms (Handgun)', 'Fighting (Brawl)', 'Intimidate', 'Law', 'Listen', 'Persuade', 'Psychology', 'Spot Hidden', 'Ride'] },
+            'Lawyer/Judge': { skillPointsFormula: (edu) => edu * 4, crRange: [20, 80], skills: ['Fast Talk', 'Law', 'Library Use', 'Own Language', 'Persuade', 'Psychology', 'any one other'] },
+            'Librarian': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 40], skills: ['Accounting', 'Anthropology or Archaeology', 'History', 'Library Use', 'Occult', 'Own Language', 'any one other'] },
+            'Merchant': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [20, 70], skills: ['Accounting', 'Appraise', 'Fast Talk', 'Listen', 'Persuade', 'Psychology', 'Spot Hidden', 'any one other'] },
+            'Miner': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [9, 25], skills: ['Climb', 'Electrical Repair or Mechanical Repair', 'Jump', 'Listen', 'Navigate', 'Ride', 'Spot Hidden', 'Survival'] },
+            'Outlaw': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [0, 9], skills: ['Drive Coach/Wagon or Ride', 'Firearms (any)', 'Fighting (any)', 'Fast Talk or Intimidate', 'Mechanical Repair', 'Stealth', 'Survival'] },
+            'Person of God': { skillPointsFormula: (edu, pow) => edu * 2 + pow * 2, crRange: [9, 40], skills: ['History', 'Library Use', 'Listen', 'Medicine', 'Persuade', 'Psychology', 'any two others'] },
+            'Politician': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [30, 80], skills: ['Fast Talk', 'Law', 'Persuade', 'Psychology', 'History', 'Own Language', 'any two others'] },
+            'Pugilist': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [9, 25], skills: ['Dodge', 'Fighting (Brawl)', 'First Aid', 'Intimidate', 'Listen', 'Psychology', 'any two others'] },
+            'Rancher': { skillPointsFormula: (edu, str) => edu * 2 + str * 2, crRange: [10, 40], skills: ['Animal Handling', 'Appraise', 'Art/Craft (any)', 'Drive Coach/Wagon', 'Listen', 'Natural World', 'Ride', 'Rope Use', 'Survival', 'Track'] },
+            'Sailor': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [9, 25], skills: ['Climb', 'Fighting (Brawl)', 'Listen', 'Navigate', 'Jump', 'Mechanical Repair', 'Rope Use', 'Swim', 'Throw'] },
+            'Scout/Mountain Person': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [9, 30], skills: ['Climb', 'Listen', 'Natural World', 'Navigate', 'Ride', 'Spot Hidden', 'Stealth', 'Survival', 'Track'] },
+            'Scientist/Engineer': { skillPointsFormula: (edu) => edu * 4, crRange: [20, 80], skills: ['Electrical Repair', 'Library Use', 'Mechanical Repair', 'Science (any)', 'any four others'] },
+            'Soldier/Warrior': { skillPointsFormula: (edu, dex, str, con) => edu * 2 + Math.max(dex * 2, str * 2, con * 2), crRange: [9, 30], skills: ['Dodge', 'Fighting (any)', 'Firearms (any)', 'Intimidate', 'Listen', 'Stealth', 'Survival', 'any one other'] },
+            'Spy': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [9, 50], skills: ['Disguise', 'Fast Talk', 'Listen', 'Persuade', 'Psychology', 'Read Lips', 'Sleight of Hand', 'Stealth'] },
+            'Student/Teacher': { skillPointsFormula: (edu, int) => edu * 2 + int * 2, crRange: [9, 25], skills: ['Appraise', 'History', 'Language Other', 'Library Use', 'Occult', 'Own Language', 'Persuade', 'Psychology', 'Science'] },
+            'Tribe Member': { skillPointsFormula: (edu, pow) => edu * 2 + pow * 2, crRange: [9, 25], skills: ['Listen', 'Natural World', 'Navigate', 'Occult', 'Stealth', 'Survival', 'Swim', 'Track'] },
+            'Zealot': { skillPointsFormula: (edu, pow, con) => edu * 2 + Math.max(pow * 2, con * 2), crRange: [9, 25], skills: ['History', 'Intimidate', 'Listen', 'Persuade', 'Psychology', 'any two others'] },
+            'Lawyer': { skillPointsFormula: (edu) => edu * 4, crRange: [20, 80], skills: ['Fast Talk', 'Law', 'Library Use', 'Own Language', 'Persuade', 'Psychology', 'any one other'] } // Added missing Lawyer
+        };
 
-    function init() {
-        const archetypeSelect = document.getElementById('archetype-select');
-        for (const key in ARCHETYPES) {
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = key;
-            archetypeSelect.appendChild(option);
+        const HINDRANCES = {
+            'Blind (7)': {value: 7, desc: 'You can’t see shit! You suffer -80% to any skill that requires sight (Most skills, but Keeper’s discretion). You increase the difficulty level of Spot Hidden rolls by 2.' },
+            // ... (all other hindrances as provided)
+            'Tongue-Tied (1)': {value: 1, desc: 'You always flub your one-liners and insults, better let your gun do the barking. You suffer -10% to Charm, Fast Talk, Intimidate, Persuade and Languages.' }
+        };
+
+        const TALENTS = {
+            'True Grit (7)': {value: 7, desc: 'Backing down just ain’t in your blood partner! At the beginning of each session, your recover POW in the same way you do Luck. You have advantage to all POW rolls.' },
+            // ... (all other talents as provided)
+            'Ruthless (1)': {value: 1, desc: 'You done worse than most and aren’t easily impressed. You do not lose sanity for killing, torturing or seeing gruesome sights.' }
+        };
+
+        const ALL_SKILLS = {
+            'Accounting': { base: 5 }, 'Animal Handling': { base: 5 }, 'Anthropology': { base: 1 }, 'Appraise': { base: 5 },
+            'Archaeology': { base: 1 }, 'Art/Craft (any)': { base: 5 }, 'Charm': { base: 15 }, 'Climb': { base: 20 },
+            'Credit Rating': { base: 0 }, 'Demolitions': { base: 1 }, 'Disguise': { base: 5 }, 'Dodge': { base: 0 },
+            'Drive Coach/Wagon': { base: 20 }, 'Electrical Repair': { base: 0 }, 'Fast Talk': { base: 5 },
+            'Fighting (any)': { base: 25 }, 'Firearms (any)': { base: 20 }, 'First Aid': { base: 30 }, 'Gambling': { base: 10 },
+            'History': { base: 5 }, 'Intimidate': { base: 15 }, 'Jump': { base: 20 }, 'Language Own': { base: 0 },
+            'Language Other': { base: 0 }, 'Law': { base: 5 }, 'Library Use': { base: 20 }, 'Listen': { base: 20 },
+            'Locksmith': { base: 1 }, 'Mechanical Repair': { base: 10 }, 'Medicine': { base: 1 }, 'Natural World': { base: 20 },
+            'Navigate': { base: 10 }, 'Occult': { base: 5 }, 'Operate Heavy Machinery': { base: 1 }, 'Persuade': { base: 10 },
+            'Psychology': { base: 10 }, 'Read Lips': { base: 1 }, 'Ride': { base: 20 }, 'Rope Use': { base: 5 },
+            'Science (any)': { base: 1 }, 'Sleight of Hand': { base: 10 }, 'Spot Hidden': { base: 25 }, 'Stealth': { base: 20 },
+            'Survival': { base: 10 }, 'Swim': { base: 20 }, 'Throw': { base: 20 }, 'Track': { base: 10 },
+            'Trap': { base: 10 },
+            'Medium': { base: 1 }, 'Telekinesis': { base: 1 }, 'Shamanic Magic': { base: 1 }, 'Witchcraft': { base: 1 }
+        };
+
+        const charList = ['STR', 'CON', 'DEX', 'POW', 'APP', 'EDU', 'INT', 'SIZ'];
+
+        let character = {
+            archetype: null,
+            occupation: null,
+            characteristics: {},
+            skills: {},
+            talents: [],
+            hindrances: [],
+            age: null,
+            luck: 0,
+            heritageText: ''
+        };
+
+        let coreCharacteristic = null;
+        let coreRollValue = 0;
+        const totalCharPoints = 460;
+
+        // Initialize
+        function init() {
+            populateSelect('archetype-select', Object.keys(ARCHETYPES));
         }
-    }
 
-    function nextStep(step) {
-        document.querySelectorAll('section').forEach(section => {
-            section.classList.add('hidden');
-        });
-        document.getElementById(`step${step}`).classList.remove('hidden');
-
-        if (step === 6) {
-            calculateAndDisplaySkillPoints();
-        } else if (step === 7) {
-            populateHindSelect();
-            populateTalSelect();
+        function populateSelect(id, options) {
+            const select = document.getElementById(id);
+            select.innerHTML = `<option value="">Select...</option>`;
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                select.appendChild(option);
+            });
         }
-    }
 
-    function prevStep(to) {
-        document.querySelectorAll('section').forEach(section => {
-            section.classList.add('hidden');
-        });
-        document.getElementById(`step${to}`).classList.remove('hidden');
-    }
+        function nextStep(step) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`step${step}`).classList.remove('hidden');
+            if (step === 6) calculateAndDisplaySkillPoints();
+            if (step === 7) {
+                populateHindSelect();
+                populateTalSelect();
+                document.getElementById('arch-talent').textContent = character.archetype.talent;
+            }
+        }
 
-    function selectArchetype() {
-        const archetypeSelect = document.getElementById('archetype-select');
-        const selectedArchetype = ARCHETYPES[archetypeSelect.value];
-        if (selectedArchetype) {
-            character.archetype = selectedArchetype;
-            updateOccupationSelect();
+        function prevStep(toStep) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`step${toStep}`).classList.remove('hidden');
+        }
+
+        function selectArchetype() {
+            const value = document.getElementById('archetype-select').value;
+            if (!value) return alert("Please select an Archetype.");
+            character.archetype = ARCHETYPES[value];
+            populateSelect('occupation-select', character.archetype.occupations);
             updateCoreCharSelect();
             nextStep(2);
-        } else {
-            alert("Please select an Archetype.");
         }
-    }
 
-    function updateOccupationSelect() {
-        const occupationSelect = document.getElementById('occupation-select');
-        occupationSelect.innerHTML = '<option value="">Select an Occupation...</option>';
-        character.archetype.occupations.forEach(occName => {
-            const option = document.createElement('option');
-            option.value = occName;
-            option.textContent = occName;
-            occupationSelect.appendChild(option);
-        });
-    }
-
-    function selectOccupation() {
-        const occupationSelect = document.getElementById('occupation-select');
-        const selectedOccupation = OCCUPATIONS[occupationSelect.value];
-        if (selectedOccupation) {
-            character.occupation = selectedOccupation;
+        function selectOccupation() {
+            const value = document.getElementById('occupation-select').value;
+            if (!value) return alert("Please select an Occupation.");
+            character.occupation = OCCUPATIONS[value];
             nextStep(3);
-        } else {
-            alert("Please select an Occupation.");
         }
-    }
 
-    function updateCoreCharSelect() {
-        const coreCharSelect = document.getElementById('core-char-select');
-        coreCharSelect.innerHTML = '<option value="">Select Core Characteristic...</option>';
-        character.archetype.core.forEach(char => {
-            const option = document.createElement('option');
-            option.value = char;
-            option.textContent = char;
-            coreCharSelect.appendChild(option);
-        });
-        // Call this to set up the default inputs and clear old rolls
-        updateCharacteristicInputs();
-    }
-    
-    function rollCore() {
-        const coreSelect = document.getElementById('core-char-select');
-        const selectedChar = coreSelect.value;
-        if (!selectedChar) {
-            alert("Please select a core characteristic first.");
-            return;
+        function updateCoreCharSelect() {
+            populateSelect('core-char-select', character.archetype.core);
+            updateCharacteristicInputs();
         }
-        
-        // Reset inputs first to clear old roll values
-        updateCharacteristicInputs();
 
-        coreCharacteristic = selectedChar;
-        const d6Roll = Math.floor(Math.random() * 6) + 1;
-        coreRollValue = 65 + (d6Roll * 5);
-        document.getElementById('core-roll-display').textContent = coreRollValue;
-        
-        // Update the specific core characteristic input field with the new roll
-        const coreInput = document.getElementById(coreCharacteristic);
-        if (coreInput) {
-            coreInput.value = coreRollValue;
-            coreInput.min = coreRollValue;
+        function rollCore() {
+            const value = document.getElementById('core-char-select').value;
+            if (!value) return alert("Please select a core characteristic first.");
+            updateCharacteristicInputs();
+            coreCharacteristic = value;
+            const d6 = Math.floor(Math.random() * 6) + 1;
+            coreRollValue = 65 + d6 * 5;
+            document.getElementById('core-roll-display').textContent = coreRollValue;
+            const input = document.getElementById(value);
+            input.value = coreRollValue;
+            input.min = coreRollValue;
             updateRemainingPoints();
         }
-    }
 
-    function updateCharacteristicInputs() {
-        const charAllocDiv = document.getElementById('char-alloc');
-        charAllocDiv.innerHTML = '';
-        
-        // Initialize all inputs to 15, with the ability to change
-        charList.forEach(char => {
-            const div = document.createElement('div');
-            div.className = 'char-input-group';
-            div.innerHTML = `
-                <label for="${char}">${char}: </label>
-                <input type="number" id="${char}" value="15" min="15" max="130" oninput="updateRemainingPoints()">
-            `;
-            charAllocDiv.appendChild(div);
-        });
-        
-        // Clear the core roll display and reset values
-        document.getElementById('core-roll-display').textContent = 'Not rolled yet';
-        coreCharacteristic = null;
-        coreRollValue = 0;
-        updateRemainingPoints();
-    }
-
-    function updateRemainingPoints() {
-        let totalSpent = 0;
-        const inputs = document.querySelectorAll('#char-alloc input[type="number"]');
-        inputs.forEach(input => {
-            totalSpent += parseInt(input.value) || 0;
-        });
-        const remaining = (totalCharPoints + coreRollValue) - totalSpent;
-        document.getElementById('remaining-points').textContent = remaining;
-    }
-
-    function completeChars() {
-        let totalSpent = 0;
-        const inputs = document.querySelectorAll('#char-alloc input[type="number"]');
-        let hasError = false;
-        let errorMessages = [];
-
-        if (!coreCharacteristic || coreRollValue === 0) {
-            alert("Please roll for a core characteristic first.");
-            return;
-        }
-
-        inputs.forEach(input => {
-            const charName = input.id;
-            const value = parseInt(input.value);
-
-            if (isNaN(value)) {
-                errorMessages.push(`Error: ${charName} must be a number.`);
-                hasError = true;
-            } else if (value < parseInt(input.min) || value > 130) {
-                errorMessages.push(`Error: ${charName} must be between ${input.min} and 130.`);
-                hasError = true;
-            }
-            totalSpent += value;
-        });
-
-        const expectedTotal = totalCharPoints + coreRollValue;
-        if (totalSpent !== expectedTotal) {
-            errorMessages.push(`Error: Total points spent must equal ${expectedTotal}. You have spent ${totalSpent}.`);
-            hasError = true;
-        }
-
-        if (hasError) {
-            alert(errorMessages.join('\n'));
-        } else {
-            inputs.forEach(input => {
-                character.characteristics[input.id] = parseInt(input.value);
+        function updateCharacteristicInputs() {
+            const div = document.getElementById('char-alloc');
+            div.innerHTML = '';
+            charList.forEach(char => {
+                const group = document.createElement('div');
+                group.className = 'char-input-group';
+                group.innerHTML = `<label for="${char}">${char}:</label><input type="number" id="${char}" value="15" min="15" max="130" oninput="updateRemainingPoints()">`;
+                div.appendChild(group);
             });
+            document.getElementById('core-roll-display').textContent = 'Not rolled yet';
+            coreCharacteristic = null;
+            coreRollValue = 0;
+            updateRemainingPoints();
+        }
+
+        function updateRemainingPoints() {
+            let spent = 0;
+            document.querySelectorAll('#char-alloc input[type="number"]').forEach(i => spent += +i.value || 0);
+            document.getElementById('remaining-points').textContent = totalCharPoints + coreRollValue - spent;
+        }
+
+        function completeChars() {
+            if (!coreCharacteristic || !coreRollValue) return alert("Please roll for a core characteristic first.");
+            const inputs = [...document.querySelectorAll('#char-alloc input[type="number"]')];
+            let spent = 0, errors = [];
+            inputs.forEach(input => {
+                const val = +input.value;
+                if (isNaN(val) || val < +input.min || val > 130) errors.push(`${input.id} must be ${input.min}-130.`);
+                spent += val;
+            });
+            if (spent !== totalCharPoints + coreRollValue) errors.push(`Total must be ${totalCharPoints + coreRollValue}.`);
+            if (errors.length) return alert(errors.join('\n'));
+            inputs.forEach(input => character.characteristics[input.id] = +input.value);
             nextStep(4);
         }
-    }
-    
-    function toggleDeduct() {
-        const ageSelect = document.getElementById('age-select');
-        const ageDeduct = document.getElementById('age-deduct');
-        const age18Deduct = document.getElementById('age-18-21-deduct');
-        ageDeduct.classList.add('hidden');
-        age18Deduct.classList.add('hidden');
-        
-        if (ageSelect.value === '18-21') {
-            age18Deduct.classList.remove('hidden');
-        } else if (['40-49', '50-59', '60-69'].includes(ageSelect.value)) {
-            ageDeduct.classList.remove('hidden');
-            document.getElementById('required-deduct').textContent = ageSelect.value === '40-49' ? 10 : (ageSelect.value === '50-59' ? 15 : 20);
-        }
-    }
 
-    function validateAgeDeduct() {
-        const ageSelect = document.getElementById('age-select');
-        let totalDeduction = 0;
-        if (ageSelect.value === '18-21') {
-            const deductStr = parseInt(document.getElementById('deduct-str-18-21').value) || 0;
-            const deductCon = parseInt(document.getElementById('deduct-con-18-21').value) || 0;
-            const deductDex = parseInt(document.getElementById('deduct-dex-18-21').value) || 0;
-            totalDeduction = deductStr + deductCon + deductDex;
-            document.getElementById('total-deduct-18-21').textContent = totalDeduction;
-        } else {
-            const deductStr = parseInt(document.getElementById('deduct-str').value) || 0;
-            const deductCon = parseInt(document.getElementById('deduct-con').value) || 0;
-            const deductDex = parseInt(document.getElementById('deduct-dex').value) || 0;
-            totalDeduction = deductStr + deductCon + dexDeduct;
-            document.getElementById('total-deduct').textContent = totalDeduction;
-        }
-    }
-
-    function applyAge() {
-        const ageSelect = document.getElementById('age-select');
-        const age = ageSelect.value;
-        character.age = age;
-        let deduction = 0;
-        if (age === '18-21') {
-            deduction = 5;
-        } else if (age === '40-49') {
-            deduction = 10;
-        } else if (age === '50-59') {
-            deduction = 15;
-        } else if (age === '60-69') {
-            deduction = 20;
+        function toggleDeduct() {
+            const value = document.getElementById('age-select').value;
+            ['age-deduct', 'age-18-21-deduct'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            if (value === '18-21') document.getElementById('age-18-21-deduct').classList.remove('hidden');
+            else if (['40-49', '50-59', '60-69'].includes(value)) {
+                document.getElementById('age-deduct').classList.remove('hidden');
+                const deduct = {'40-49':10,'50-59':15,'60-69':20}[value];
+                document.getElementById('required-deduct').textContent = deduct;
+            }
         }
 
-        let totalDeducted = 0;
-        let strDeduct = 0;
-        let conDeduct = 0;
-        let dexDeduct = 0;
-
-        if (deduction > 0) {
-            if (age === '18-21') {
-                strDeduct = parseInt(document.getElementById('deduct-str-18-21').value) || 0;
-                conDeduct = parseInt(document.getElementById('deduct-con-18-21').value) || 0;
-                dexDeduct = parseInt(document.getElementById('deduct-dex-18-21').value) || 0;
+        function validateAgeDeduct() {
+            const value = document.getElementById('age-select').value;
+            let total = 0, deductStr = 0, deductCon = 0, deductDex = 0;
+            if (value === '18-21') {
+                deductStr = +document.getElementById('deduct-str-18-21').value || 0;
+                deductCon = +document.getElementById('deduct-con-18-21').value || 0;
+                deductDex = +document.getElementById('deduct-dex-18-21').value || 0;
+                total = deductStr + deductCon + deductDex;
+                document.getElementById('total-deduct-18-21').textContent = total;
             } else {
-                strDeduct = parseInt(document.getElementById('deduct-str').value) || 0;
-                conDeduct = parseInt(document.getElementById('deduct-con').value) || 0;
-                dexDeduct = parseInt(document.getElementById('deduct-dex').value) || 0;
-            }
-            totalDeducted = strDeduct + conDeduct + dexDeduct;
-            if (totalDeducted !== deduction) {
-                alert(`Please distribute exactly ${deduction} points across STR, CON, and DEX.`);
-                return;
+                deductStr = +document.getElementById('deduct-str').value || 0;
+                deductCon = +document.getElementById('deduct-con').value || 0;
+                deductDex = +document.getElementById('deduct-dex').value || 0;
+                total = deductStr + deductCon + deductDex;
+                document.getElementById('total-deduct').textContent = total;
             }
         }
-        
-        character.characteristics.STR -= strDeduct;
-        character.characteristics.CON -= conDeduct;
-        character.characteristics.DEX -= dexDeduct;
 
-        if (age === '22-39') {
-            character.characteristics.EDU += 10;
-        } else if (age === '40-49') {
-            character.characteristics.EDU += 20;
-            character.characteristics.APP -= 10;
-        } else if (age === '50-59') {
-            character.characteristics.EDU += 30;
-            character.characteristics.APP -= 15;
-        } else if (age === '60-69') {
-            character.characteristics.EDU += 40;
-            character.characteristics.APP -= 20;
-        }
-        nextStep(5);
-    }
-
-    function rollLuck() {
-        const d6a = Math.floor(Math.random() * 6) + 1;
-        const d6b = Math.floor(Math.random() * 6) + 1;
-        const roll = 30 + (d6a + d6b) * 5;
-        character.luck = roll;
-        document.getElementById('luck-display').textContent = roll;
-        if (character.age === '18-21' && character.luck > 90) {
-            character.luck = 90;
-            document.getElementById('luck-display').textContent += " (Capped at 90 due to age)";
-        }
-    }
-
-    function calcSecondaries() {
-        character.characteristics.Move = 7;
-        if (character.characteristics.DEX > character.characteristics.STR && character.characteristics.DEX > character.characteristics.SIZ) {
-            character.characteristics.Move = 8;
-        } else if (character.characteristics.STR > character.characteristics.DEX && character.characteristics.STR > character.characteristics.SIZ) {
-            character.characteristics.Move = 6;
-        } else if (character.characteristics.SIZ > character.characteristics.DEX && character.characteristics.SIZ > character.characteristics.STR) {
-            character.characteristics.Move = 6;
+        function applyAge() {
+            const value = document.getElementById('age-select').value;
+            character.age = value;
+            const deductMap = {'18-21':5, '40-49':10, '50-59':15, '60-69':20};
+            let deduct = deductMap[value] || 0;
+            let strD = 0, conD = 0, dexD = 0;
+            if (deduct) {
+                const prefix = value === '18-21' ? '-18-21' : '';
+                strD = +document.getElementById(`deduct-str${prefix}`).value || 0;
+                conD = +document.getElementById(`deduct-con${prefix}`).value || 0;
+                dexD = +document.getElementById(`deduct-dex${prefix}`).value || 0;
+                if (strD + conD + dexD !== deduct) return alert(`Distribute exactly ${deduct} points.`);
+            }
+            character.characteristics.STR -= strD;
+            character.characteristics.CON -= conD;
+            character.characteristics.DEX -= dexD;
+            const eduMods = {'22-39':10, '40-49':20, '50-59':30, '60-69':40};
+            const appMods = {'40-49':-10, '50-59':-15, '60-69':-20};
+            character.characteristics.EDU += eduMods[value] || 0;
+            character.characteristics.APP += appMods[value] || 0;
+            nextStep(5);
         }
 
-        if (character.characteristics.DEX > 90) character.characteristics.Move += 1;
-        if (character.characteristics.STR > 90) character.characteristics.Move -= 1;
+        function rollLuck() {
+            const d6a = Math.floor(Math.random() * 6) + 1;
+            const d6b = Math.floor(Math.random() * 6) + 1;
+            character.luck = 30 + (d6a + d6b) * 5;
+            if (character.age === '18-21' && character.luck > 90) character.luck = 90;
+            document.getElementById('luck-display').textContent = character.luck + (character.age === '18-21' && character.luck === 90 ? ' (Capped)' : '');
+        }
 
-        if (character.age === '50-59') character.characteristics.Move -= 1;
-        if (character.age === '60-69') character.characteristics.Move -= 2;
-
-        character.characteristics.HP = Math.ceil((character.characteristics.CON + character.characteristics.SIZ) / 10);
-        character.characteristics.Sanity = character.characteristics.POW;
-        character.characteristics.MP = Math.floor(character.characteristics.POW / 5);
-        character.characteristics.Build = character.characteristics.STR + character.characteristics.SIZ;
-        if (character.characteristics.Build < 65) character.characteristics.Build = -2;
-        else if (character.characteristics.Build < 85) character.characteristics.Build = -1;
-        else if (character.characteristics.Build < 125) character.characteristics.Build = 0;
-        else if (character.characteristics.Build < 165) character.characteristics.Build = 1;
-        else if (character.characteristics.Build < 205) character.characteristics.Build = 2;
-        else if (character.characteristics.Build >= 205) character.characteristics.Build = 3;
-
-        character.characteristics.Dodge = Math.floor(character.characteristics.DEX / 2);
-
-        const displayDiv = document.getElementById('secondary-display');
-        displayDiv.innerHTML = `
-            <p><strong>Move:</strong> ${character.characteristics.Move}</p>
-            <p><strong>Hit Points:</strong> ${character.characteristics.HP}</p>
-            <p><strong>Magic Points:</strong> ${character.characteristics.MP}</p>
-            <p><strong>Sanity:</strong> ${character.characteristics.Sanity}</p>
-            <p><strong>Build:</strong> ${character.characteristics.Build}</p>
-            <p><strong>Dodge:</strong> ${character.characteristics.Dodge}</p>
-        `;
-        nextStep(6);
-    }
-
-    function getSkillPoints() {
-        const occPointsFormula = character.occupation.skillPointsFormula;
-        const occPoints = occPointsFormula(character.characteristics.EDU, character.characteristics.DEX, character.characteristics.STR, character.characteristics.CON, character.characteristics.APP, character.characteristics.POW, character.characteristics.INT, character.characteristics.SIZ);
-        const persPoints = character.characteristics.INT * 2;
-        const archPoints = 100;
-        return { occPoints, persPoints, archPoints };
-    }
-
-    function isOccupationSkill(skillName) {
-        const occSkills = character.occupation.skills;
-        const isGeneral = occSkills.includes('any one other') || occSkills.includes('any two other') || occSkills.includes('any three others') || occSkills.includes('any four others');
-        const isInterpersonal = occSkills.includes('two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)');
-        const isFighting = occSkills.includes('Fighting or Firearms (any)') || occSkills.includes('Fighting (any)');
-        const isFirearms = occSkills.includes('Fighting or Firearms (any)') || occSkills.includes('Firearms (any)');
-        const isArtCraft = occSkills.includes('Art/Craft (any)');
-        const isLanguage = occSkills.includes('Language Other (any)');
-
-        return occSkills.includes(skillName) ||
-               (isInterpersonal && (skillName.includes('Charm') || skillName.includes('Fast Talk') || skillName.includes('Intimidate') || skillName.includes('Persuade'))) ||
-               (isFighting && skillName.includes('Fighting')) ||
-               (isFirearms && skillName.includes('Firearms')) ||
-               (isArtCraft && skillName.includes('Art/Craft')) ||
-               (isLanguage && skillName.includes('Language Other'));
-    }
-
-    function isArchetypeSkill(skillName) {
-        const archBonusSkills = character.archetype.bonusSkills;
-        const isFighting = archBonusSkills.includes('Fighting (any)');
-        const isFirearms = archBonusSkills.includes('Firearms (any)');
-        const isArtCraft = archBonusSkills.includes('Art/Craft (any)');
-        const isLanguage = archBonusSkills.includes('Language Other (any)');
-
-        return archBonusSkills.includes(skillName) ||
-               (isFighting && skillName.includes('Fighting')) ||
-               (isFirearms && skillName.includes('Firearms')) ||
-               (isArtCraft && skillName.includes('Art/Craft')) ||
-               (isLanguage && skillName.includes('Language Other'));
-    }
-
-    function calculateAndDisplaySkillPoints() {
-        const { occPoints, persPoints, archPoints } = getSkillPoints();
-        
-        document.getElementById('occ-total').textContent = occPoints;
-        document.getElementById('pers-total').textContent = persPoints;
-        document.getElementById('arch-total').textContent = archPoints;
-        
-        const skillAllocDiv = document.getElementById('skill-alloc');
-        skillAllocDiv.innerHTML = '';
-        
-        const allSkillNames = new Set(Object.keys(ALL_SKILLS));
-        const sortedSkills = Array.from(allSkillNames).sort();
-
-        sortedSkills.forEach(skillName => {
-            const baseValue = ALL_SKILLS[skillName] ? ALL_SKILLS[skillName].base : 0;
-            const isOcc = isOccupationSkill(skillName);
-            const isArch = isArchetypeSkill(skillName);
-            const classList = ['skill-item'];
-            if (isOcc) classList.push('occupation-skill');
-            if (isArch) classList.push('archetype-skill');
-
-            const skillDiv = document.createElement('div');
-            skillDiv.className = classList.join(' ');
-            skillDiv.innerHTML = `
-                <div class="skill-item-title">${skillName}</div>
-                <div class="skill-input-container">
-                    <label>Base: ${baseValue}%</label>
-                    <label>Value: <input type="number" id="skill-${skillName.replace(/[\s\(\)/]/g, '-')}" class="skill-input" value="${baseValue}" min="${baseValue}"></label>
-                </div>
-                ${isOcc ? '<span class="skill-label">Occupational Skill</span>' : ''}
-                ${isArch ? '<span class="skill-label">Archetype Bonus Skill</span>' : ''}
+        function calcSecondaries() {
+            if (!character.luck) return alert('Roll Luck first.');
+            let move = 7;
+            const {DEX, STR, SIZ} = character.characteristics;
+            if (DEX > STR && DEX > SIZ) move = 8;
+            else if (Math.max(STR, SIZ) > DEX) move = 6;
+            if (DEX > 90) move += 1;
+            if (STR > 90) move -= 1;
+            const ageMods = {'50-59':-1, '60-69':-2};
+            move += ageMods[character.age] || 0;
+            character.characteristics.Move = move;
+            character.characteristics.HP = Math.ceil((character.characteristics.CON + SIZ) / 10);
+            character.characteristics.Sanity = character.characteristics.POW;
+            character.characteristics.MP = Math.floor(character.characteristics.POW / 5);
+            const build = STR + SIZ;
+            character.characteristics.Build = build < 65 ? -2 : build < 85 ? -1 : build < 125 ? 0 : build < 165 ? 1 : build < 205 ? 2 : 3;
+            character.characteristics.Dodge = Math.floor(DEX / 2);
+            document.getElementById('secondary-display').innerHTML = `
+                <p><strong>Move:</strong> ${move}</p>
+                <p><strong>Hit Points:</strong> ${character.characteristics.HP}</p>
+                <p><strong>Magic Points:</strong> ${character.characteristics.MP}</p>
+                <p><strong>Sanity:</strong> ${character.characteristics.Sanity}</p>
+                <p><strong>Build:</strong> ${character.characteristics.Build}</p>
+                <p><strong>Dodge:</strong> ${character.characteristics.Dodge}</p>
             `;
-            skillAllocDiv.appendChild(skillDiv);
-        });
-        
-        document.getElementById('complete-skills-btn').disabled = false;
-    }
-    
-    function completeSkills() {
-        const skillInputs = document.querySelectorAll('#skill-alloc input.skill-input');
-        character.skills = {};
-        skillInputs.forEach(input => {
-            const skillName = input.closest('.skill-item').querySelector('.skill-item-title').textContent.trim();
-            character.skills[skillName] = parseInt(input.value) || 0;
-        });
-        nextStep(7);
-    }
-    
-    function populateHindSelect() {
-        const hindrancesDiv = document.getElementById('hindrance-checkboxes');
-        hindrancesDiv.innerHTML = '';
-        for (const [key, value] of Object.entries(HINDRANCES)) {
-            const label = document.createElement('label');
-            label.className = 'hindrance-item';
-            label.innerHTML = `
-                <input type="checkbox" name="hindrance" value="${key}">
-                <div onclick="toggleDescription(this)" class="hindrance-name">${key}</div>
-                <div class="hindrance-description hidden">${value.desc}</div>
-            `;
-            label.onchange = updateSelectedHindrances;
-            hindrancesDiv.appendChild(label);
+            nextStep(6);
         }
-    }
 
-    function populateTalSelect() {
-        const talentsDiv = document.getElementById('talent-checkboxes');
-        talentsDiv.innerHTML = '';
-        for (const [key, value] of Object.entries(TALENTS)) {
-            const label = document.createElement('label');
-            label.className = 'talent-item';
-            label.innerHTML = `
-                <input type="checkbox" name="talent" value="${key}">
-                <div onclick="toggleDescription(this)" class="talent-name">${key}</div>
-                <div class="talent-description hidden">${value.desc}</div>
-            `;
-            label.onchange = updateSelectedTalents;
-            talentsDiv.appendChild(label);
+        function getSkillPoints() {
+            const {skillPointsFormula, skills} = character.occupation;
+            // Adjust args based on formula arity (simplified; assume max 8)
+            const args = [character.characteristics.EDU, character.characteristics.DEX, character.characteristics.POW, character.characteristics.STR, character.characteristics.CON, character.characteristics.APP, character.characteristics.INT, character.characteristics.SIZ];
+            const occPoints = skillPointsFormula(...args.slice(0, skillPointsFormula.length));
+            return { occPoints, persPoints: character.characteristics.INT * 2, archPoints: 100 };
         }
-    }
 
-    function toggleDescription(element) {
-        const description = element.nextElementSibling;
-        if (description && description.classList.contains('hidden')) {
-            description.classList.remove('hidden');
-        } else if (description) {
-            description.classList.add('hidden');
+        function isOccupationSkill(skill) {
+            const occSkills = character.occupation.skills;
+            if (occSkills.includes(skill)) return true;
+            if (occSkills.some(s => s.includes('interpersonal') && ['Charm', 'Fast Talk', 'Intimidate', 'Persuade'].some(inter => skill.includes(inter)))) return true;
+            if ((occSkills.includes('Fighting or Firearms (any)') || occSkills.includes('Fighting (any)')) && skill.includes('Fighting')) return true;
+            if ((occSkills.includes('Fighting or Firearms (any)') || occSkills.includes('Firearms (any)')) && skill.includes('Firearms')) return true;
+            if (occSkills.includes('Art/Craft (any)') && skill.includes('Art/Craft')) return true;
+            if (occSkills.includes('Language Other (any)') && skill.includes('Language Other')) return true;
+            return occSkills.some(s => s.includes('any') && !s.includes('interpersonal'));
         }
-    }
 
-    function updateSelectedHindrances() {
-        const selectedCheckboxes = document.querySelectorAll('#hindrance-checkboxes input:checked');
-        let newHindrances = [];
-        let totalPoints = 0;
-        selectedCheckboxes.forEach(checkbox => {
-            const name = checkbox.value;
-            const hindrance = HINDRANCES[name];
-            newHindrances.push({ name, value: hindrance.value });
-            totalPoints += hindrance.value;
-        });
-        character.hindrances = newHindrances;
-        document.getElementById('selected-hinds').textContent = character.hindrances.map(h => h.name.split(' ')[0]).join(', ') || 'None';
-        document.getElementById('talent-points').textContent = totalPoints;
-    }
-
-    function updateSelectedTalents() {
-        const selectedCheckboxes = document.querySelectorAll('#talent-checkboxes input:checked');
-        let newTalents = [];
-        selectedCheckboxes.forEach(checkbox => {
-            const name = checkbox.value;
-            const talent = TALENTS[name];
-            newTalents.push({ name, value: talent.value });
-        });
-        character.talents = newTalents;
-        document.getElementById('selected-tals').textContent = character.talents.map(t => t.name.split(' ')[0]).join(', ') || 'None';
-    }
-
-    function rollNaturalTalent() {
-        const talentsWithLowValue = Object.entries(TALENTS).filter(([key, value]) => value.value >= 1 && value.value <= 3);
-        
-        if (talentsWithLowValue.length > 0) {
-            const randomIndex = Math.floor(Math.random() * talentsWithLowValue.length);
-            const [talentName, talentData] = talentsWithLowValue[randomIndex];
-            document.getElementById('natural-talent').textContent = `${talentName} (Value: ${talentData.value})`;
-        } else {
-            document.getElementById('natural-talent').textContent = `No natural talent rolled`;
+        function isArchetypeSkill(skill) {
+            const skills = character.archetype.bonusSkills;
+            if (skills.includes(skill)) return true;
+            if (skills.includes('Fighting (any)') && skill.includes('Fighting')) return true;
+            if (skills.includes('Firearms (any)') && skill.includes('Firearms')) return true;
+            if (skills.includes('Art/Craft (any)') && skill.includes('Art/Craft')) return true;
+            if (skills.includes('Language Other (any)') && skill.includes('Language Other')) return true;
+            return false;
         }
-    }
 
-    function completeHT() {
-        nextStep(8);
-    }
-
-    function completeBackstory() {
-        character.name = document.getElementById('name').value;
-        character.gender = document.getElementById('gender').value;
-        character.description = document.getElementById('description').value;
-        character.heritage = document.getElementById('heritage').value;
-        character.ideology = document.getElementById('ideology').value;
-        character.significantPeople = document.getElementById('significant-people').value;
-        character.meaningful = document.getElementById('meaningful').value;
-        character.traits = document.getElementById('traits').value;
-        character.madness = document.getElementById('madness').value;
-        character.hairEye = document.getElementById('hair-eye').value;
-        character.marks = document.getElementById('marks').value;
-        nextStep(9);
-    }
-
-    function generateSheet() {
-        const sheetContent = document.getElementById('sheet-content');
-        document.getElementById('sheet-title').textContent = character.name || 'Untitled Character';
-        
-        let skillsHtml = `<h3>Skills</h3>`;
-        const skillInputs = document.querySelectorAll('#skill-alloc input.skill-input');
-        if (skillInputs.length > 0) {
-            skillsHtml += `<ul>`;
-            skillsHtml += `<li><strong>Occupation Points:</strong> ${document.getElementById('occ-total').textContent}</li>`;
-            skillsHtml += `<li><strong>Personal Points:</strong> ${document.getElementById('pers-total').textContent}</li>`;
-            skillsHtml += `<li><strong>Archetype Bonus:</strong> ${document.getElementById('arch-total').textContent}</li>`;
-            skillsHtml += `</ul><hr>`;
-            skillsHtml += `<h3>Your Skill Scratchpad</h3>`;
-            skillsHtml += `<ul>`;
-            skillInputs.forEach(input => {
-                const skillName = input.closest('.skill-item').querySelector('.skill-item-title').textContent.trim();
-                const value = parseInt(input.value) || 0;
-                character.skills[skillName] = value;
-                skillsHtml += `<li><strong>${skillName}:</strong> ${value}</li>`;
+        function calculateAndDisplaySkillPoints() {
+            const {occPoints, persPoints, archPoints} = getSkillPoints();
+            ['occ-total', 'pers-total', 'arch-total'].forEach(id => document.getElementById(id).textContent = eval(id.replace('-total', 'Points')));
+            const div = document.getElementById('skill-alloc');
+            div.innerHTML = '';
+            Object.keys(ALL_SKILLS).sort().forEach(skill => {
+                const base = ALL_SKILLS[skill].base;
+                const isOcc = isOccupationSkill(skill);
+                const isArch = isArchetypeSkill(skill);
+                const item = document.createElement('div');
+                item.className = `skill-item ${isOcc ? 'occupation-skill' : ''} ${isArch ? 'archetype-skill' : ''}`;
+                item.innerHTML = `
+                    <div class="skill-item-title">${skill}</div>
+                    <div class="skill-input-container">
+                        <span>Base: ${base}%</span>
+                        <input type="number" class="skill-input" value="${base}" min="${base}">
+                    </div>
+                    ${isOcc ? '<span class="skill-label">Occupational</span>' : ''}
+                    ${isArch ? '<span class="skill-label">Archetype Bonus</span>' : ''}
+                `;
+                div.appendChild(item);
             });
-            skillsHtml += `</ul>`;
-        } else {
-            skillsHtml += `<p>No skill points calculated yet.</p>`;
+            document.getElementById('complete-skills-btn').disabled = false;
         }
-        
-        sheetContent.innerHTML = `
-            <h3>Core Characteristics</h3>
-            <ul>
-                ${charList.map(char => `<li><strong>${char}:</strong> ${character.characteristics[char] || 15}</li>`).join('')}
-            </ul>
-            <h3>Secondary Attributes</h3>
-            <p><strong>Luck:</strong> ${character.luck}</p>
-            ${skillsHtml}
-            <h3>Talents & Hindrances</h3>
-            <p><strong>Archetype Talent:</strong> ${character.archetype.talent}</p>
-            <p><strong>Natural Talent:</strong> ${document.getElementById('natural-talent').textContent}</p>
-            <p><strong>Selected Talents:</strong> ${character.talents.map(t => t.name).join(', ') || 'None'}</p>
-            <p><strong>Selected Hindrances:</strong> ${character.hindrances.map(h => h.name).join(', ') || 'None'}</p>
-            <h3>Backstory</h3>
-            <p><strong>Gender:</strong> ${character.gender}</p>
-            <p><strong>Description:</strong> ${character.description}</p>
-            <p><strong>Heritage:</strong> ${document.getElementById('heritage').selectedOptions[0].text}</p>
-            <p><strong>Ideology/Beliefs:</strong> ${character.ideology}</p>
-            <p><strong>Significant People:</strong> ${character.significantPeople}</p>
-            <p><strong>Meaningful Location/Possessions:</strong> ${character.meaningful}</p>
-            <p><strong>Traits:</strong> ${character.traits}</p>
-            <p><strong>Bout of Madness:</strong> ${character.madness}</p>
-            <p><strong>Hair/Eye Color:</strong> ${character.hairEye}</p>
-            <p><strong>Distinguishing Marks:</strong> ${character.marks}</p>
-        `;
-        document.getElementById('character-sheet').classList.remove('hidden');
-        document.getElementById('export-pdf').classList.remove('hidden');
-        document.getElementById('step9').classList.add('hidden');
-    }
 
-    function exportToPDF() {
-        const element = document.getElementById('character-sheet');
-        html2canvas(element, { scale: 2 }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgWidth = 190;
-            const pageHeight = 277;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 10;
-            pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+        function completeSkills() {
+            character.skills = {};
+            document.querySelectorAll('.skill-input').forEach((input, index) => {
+                const title = document.querySelectorAll('.skill-item-title')[index].textContent.trim();
+                character.skills[title] = +input.value || 0;
+            });
+            nextStep(7);
+        }
 
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight + 10;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+        function populateHindSelect() {
+            const div = document.getElementById('hindrance-checkboxes');
+            div.innerHTML = Object.entries(HINDRANCES).map(([key, data]) => `
+                <label class="hindrance-item">
+                    <input type="checkbox" value="${key}">
+                    <div class="hindrance-name" onclick="toggleDescription(this)">${key}</div>
+                    <div class="hindrance-description hidden">${data.desc}</div>
+                </label>
+            `).join('');
+            div.querySelectorAll('input').forEach(input => input.onchange = updateSelectedHindrances);
+        }
+
+        function populateTalSelect() {
+            const div = document.getElementById('talent-checkboxes');
+            div.innerHTML = Object.entries(TALENTS).map(([key, data]) => `
+                <label class="talent-item">
+                    <input type="checkbox" value="${key}">
+                    <div class="talent-name" onclick="toggleDescription(this)">${key}</div>
+                    <div class="talent-description hidden">${data.desc}</div>
+                </label>
+            `).join('');
+            div.querySelectorAll('input').forEach(input => input.onchange = updateSelectedTalents);
+        }
+
+        function toggleDescription(el) {
+            el.nextElementSibling.classList.toggle('hidden');
+        }
+
+        function updateSelectedHindrances() {
+            const checked = [...document.querySelectorAll('#hindrance-checkboxes input:checked')];
+            character.hindrances = checked.map(cb => ({name: cb.value, value: HINDRANCES[cb.value].value}));
+            document.getElementById('selected-hinds').textContent = character.hindrances.map(h => h.name.split(' (')[0]).join(', ') || 'None';
+            document.getElementById('talent-points').textContent = character.hindrances.reduce((sum, h) => sum + h.value, 0);
+        }
+
+        function updateSelectedTalents() {
+            const checked = [...document.querySelectorAll('#talent-checkboxes input:checked')];
+            character.talents = checked.map(cb => ({name: cb.value, value: TALENTS[cb.value].value}));
+            document.getElementById('selected-tals').textContent = character.talents.map(t => t.name.split(' (')[0]).join(', ') || 'None';
+        }
+
+        function rollNaturalTalent() {
+            const lowTalents = Object.entries(TALENTS).filter(([,data]) => data.value >= 1 && data.value <= 3);
+            if (lowTalents.length) {
+                const [name, data] = lowTalents[Math.floor(Math.random() * lowTalents.length)];
+                document.getElementById('natural-talent').textContent = `${name} (Value: ${data.value})`;
+            } else {
+                document.getElementById('natural-talent').textContent = 'No natural talent rolled';
             }
-            pdf.save(`${character.name || 'Character'}-Wanted-Poster.pdf`);
-        });
-    }
+        }
 
-    document.addEventListener('DOMContentLoaded', init);
+        function completeHT() {
+            nextStep(8);
+        }
+
+        function completeBackstory() {
+            ['name', 'gender', 'description', 'ideology', 'significant-people', 'meaningful', 'traits', 'hair-eye', 'marks'].forEach(key => {
+                const id = key.replace(/-/g, '');
+                character[key.replace(/-/g, '')] = document.getElementById(id).value;
+            });
+            character.madness = document.getElementById('madness').value;
+            character.heritageText = document.getElementById('heritage').selectedOptions[0].text;
+            nextStep(9);
+        }
+
+        function generateSheet() {
+            const title = document.getElementById('sheet-title');
+            const content = document.getElementById('sheet-content');
+            title.textContent = character.name || 'Untitled Character';
+
+            let skillsHtml = `<h3>Skills</h3><ul>
+                <li><strong>Occupation Points:</strong> ${document.getElementById('occ-total').textContent}</li>
+                <li><strong>Personal Points:</strong> ${document.getElementById('pers-total').textContent}</li>
+                <li><strong>Archetype Bonus:</strong> ${document.getElementById('arch-total').textContent}</li>
+            </ul><hr><h3>Skills</h3><ul>`;
+            Object.entries(character.skills).sort(([a], [b]) => a.localeCompare(b)).forEach(([skill, val]) => skillsHtml += `<li><strong>${skill}:</strong> ${val}%</li>`);
+            skillsHtml += '</ul>';
+
+            content.innerHTML = `
+                <h3>Characteristics</h3>
+                <ul>${charList.map(c => `<li><strong>${c}:</strong> ${character.characteristics[c] || 15}</li>`).join('')}</ul>
+                <h3>Secondary Attributes</h3>
+                <p><strong>Luck:</strong> ${character.luck}</p>
+                ${skillsHtml}
+                <h3>Talents & Hindrances</h3>
+                <p><strong>Archetype Talent:</strong> ${character.archetype.talent}</p>
+                <p><strong>Natural Talent:</strong> ${document.getElementById('natural-talent').textContent}</p>
+                <p><strong>Selected Talents:</strong> ${character.talents.map(t => t.name.split(' (')[0]).join(', ') || 'None'}</p>
+                <p><strong>Selected Hindrances:</strong> ${character.hindrances.map(h => h.name.split(' (')[0]).join(', ') || 'None'}</p>
+                <h3>Backstory</h3>
+                <p><strong>Gender:</strong> ${character.gender}</p>
+                <p><strong>Description:</strong> ${character.description}</p>
+                <p><strong>Heritage:</strong> ${character.heritageText}</p>
+                <p><strong>Ideology/Beliefs:</strong> ${character.ideology}</p>
+                <p><strong>Significant People:</strong> ${character.significantPeople}</p>
+                <p><strong>Meaningful Location/Possessions:</strong> ${character.meaningful}</p>
+                <p><strong>Traits:</strong> ${character.traits}</p>
+                <p><strong>Bout of Madness:</strong> ${character.madness}</p>
+                <p><strong>Hair/Eye Color:</strong> ${character.hairEye}</p>
+                <p><strong>Distinguishing Marks:</strong> ${character.marks}</p>
+            `;
+            document.getElementById('character-sheet').classList.remove('hidden');
+            document.getElementById('export-pdf').classList.remove('hidden');
+            document.getElementById('step9').classList.add('hidden');
+        }
+
+        function exportToPDF() {
+            html2canvas(document.getElementById('character-sheet'), {scale: 2}).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190;
+                const pageHeight = 277;
+                let heightLeft = (canvas.height * imgWidth) / canvas.width;
+                let position = 0;
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, heightLeft);
+                heightLeft -= pageHeight;
+                while (heightLeft >= 0) {
+                    position = heightLeft - (canvas.height * imgWidth) / canvas.width + pageHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, heightLeft);
+                    heightLeft -= pageHeight;
+                }
+                pdf.save(`${character.name || 'Character'}-Wanted-Poster.pdf`);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
