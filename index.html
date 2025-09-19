@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Creepster&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Creepster&family=Rye&family=Merriweather:wght@400;700&display=swap');
 
         :root {
             --primary-bg: linear-gradient(135deg, #2c1a0e 0%, #4c301c 50%, #6e482a 100%);
@@ -21,6 +21,12 @@
             --glow-orange: #ff9800;
             --shadow-dark: rgba(0, 0, 0, 0.5);
             --shadow-gold: rgba(201, 142, 42, 0.5);
+
+            /* Wanted Poster Specific Variables */
+            --parchment: #f3eacb;
+            --wood: #8B4513;
+            --ink: #4a2c2a;
+            --wood-plank: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g fill="%236B3513" fill-opacity="0.4"><rect x="0" y="0" width="100" height="1"/><rect x="0" y="50" width="100" height="1"/></g></svg>');
         }
 
         body {
@@ -270,9 +276,82 @@
             .talent-grid, .hindrance-grid { grid-template-columns: 1fr; }
             .char-input-group { flex-direction: column; align-items: flex-start; }
         }
+
+        /* --- Wanted Poster Specific Styling (Hidden by default) --- */
+        #wanted-poster {
+            width: 500px;
+            height: 650px;
+            background-color: var(--parchment);
+            border: 5px solid var(--ink);
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            font-family: 'Rye', cursive;
+            color: var(--ink);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+        }
+
+        #wanted-poster .title {
+            font-family: 'Rye', cursive;
+            font-size: 5em;
+            font-weight: bold;
+            border-bottom: 8px double var(--ink);
+            border-top: 8px double var(--ink);
+            width: 100%;
+            padding: 10px 0;
+            margin-bottom: 10px;
+        }
+
+        #wanted-poster .subtitle {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-family: 'Rye', cursive;
+            font-style: normal;
+        }
+
+        #wanted-poster #poster-portrait {
+            width: 250px;
+            height: 250px;
+            border: 4px solid var(--ink);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-color: #e0d5b6;
+        }
+        
+        #wanted-poster #poster-portrait img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(0.7) contrast(1.1);
+        }
+
+        #wanted-poster #poster-name {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        #wanted-poster #poster-crime {
+            font-size: 1.2em;
+            margin-bottom: auto;
+        }
+
+        #wanted-poster #poster-reward {
+            font-size: 2em;
+            font-weight: bold;
+            border-top: 4px solid var(--ink);
+            width: 100%;
+            padding-top: 10px;
+        }
     </style>
 </head>
 <body>
+
     <h1>Western RPG Charactermancer</h1>
     <p class="subtitle">Made for Rollingdeadly's The Quick and the Dead</p>
 
@@ -407,8 +486,17 @@
         <h3 id="sheet-title"></h3>
         <div id="sheet-content"></div>
     </section>
-
-    <button id="export-pdf" class="hidden" onclick="exportToPDF()">Download PDF - Wanted Poster Style</button>
+    
+    <div id="wanted-poster" class="hidden">
+        <div class="title">WANTED</div>
+        <div class="subtitle">DEAD OR ALIVE</div>
+        <div id="poster-portrait">
+            <img id="poster-portrait-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABo+SiNAAAAA1BMVEVMaXGjIq4dAAAAE0lEQVQYGe3BAQ0AAADCoXtP3gN/QBAEAgAE/j1090/1vQn3wQAAAABJRU5ErkJggg==" alt="Black Bart Silhouette">
+        </div>
+        <div id="poster-name"></div>
+        <div id="poster-crime"></div>
+        <div id="poster-reward"></div>
+    </div>
 
     <script>
         const { jsPDF } = window.jspdf;
@@ -583,23 +671,6 @@
             'Mule Man (1)': {value: 1, desc: 'You got that strong, good for haulin\' physique! You can carry an additional 3 slots.'},
             'War Cry (1)': {value: 1, desc: 'A blood-curdling yell that emboldens you and terrifies opponents. You roll Intimidation, against which opponents within your STR/10 spaces may roll Intimidation or POW. If you win, opponents suffer disadvantage to their next actions. Can only be used once per encounter.'},
             'Ruthless (1)': {value: 1, desc: 'You done worse than most and aren\'t easily impressed. You do not lose sanity for killing, torturing or seeing gruesome sights.'}
-        };
-
-        const ALL_SKILLS = {
-            'Accounting': { base: 5 }, 'Animal Handling': { base: 5 }, 'Anthropology': { base: 1 }, 'Appraise': { base: 5 },
-            'Archaeology': { base: 1 }, 'Art/Craft (any)': { base: 5 }, 'Charm': { base: 15 }, 'Climb': { base: 20 },
-            'Credit Rating': { base: 0 }, 'Demolitions': { base: 1 }, 'Disguise': { base: 5 }, 'Dodge': { base: 0 },
-            'Drive Coach/Wagon': { base: 20 }, 'Electrical Repair': { base: 0 }, 'Fast Talk': { base: 5 },
-            'Fighting (any)': { base: 25 }, 'Firearms (any)': { base: 20 }, 'First Aid': { base: 30 }, 'Gambling': { base: 10 },
-            'History': { base: 5 }, 'Intimidate': { base: 15 }, 'Jump': { base: 20 }, 'Language Own': { base: 0 },
-            'Language Other': { base: 0 }, 'Law': { base: 5 }, 'Library Use': { base: 20 }, 'Listen': { base: 20 },
-            'Locksmith': { base: 1 }, 'Mechanical Repair': { base: 10 }, 'Medicine': { base: 1 }, 'Natural World': { base: 20 },
-            'Navigate': { base: 10 }, 'Occult': { base: 5 }, 'Operate Heavy Machinery': { base: 1 }, 'Persuade': { base: 10 },
-            'Psychology': { base: 10 }, 'Read Lips': { base: 1 }, 'Ride': { base: 20 }, 'Rope Use': { base: 5 },
-            'Science (any)': { base: 1 }, 'Sleight of Hand': { base: 10 }, 'Spot Hidden': { base: 25 }, 'Stealth': { base: 20 },
-            'Survival': { base: 10 }, 'Swim': { base: 20 }, 'Throw': { base: 20 }, 'Track': { base: 10 },
-            'Trap': { base: 10 },
-            'Medium': { base: 1 }, 'Telekinesis': { base: 1 }, 'Shamanic Magic': { base: 1 }, 'Witchcraft': { base: 1 }
         };
 
         const charList = ['STR', 'CON', 'DEX', 'POW', 'APP', 'EDU', 'INT', 'SIZ'];
@@ -977,12 +1048,22 @@
                 <p><strong>Distinguishing Marks:</strong> ${character.marks}</p>
             `;
             document.getElementById('character-sheet').classList.remove('hidden');
-            document.getElementById('export-pdf').classList.remove('hidden');
-            document.getElementById('step9').classList.add('hidden');
+            
+            // Replaces the standard download button with the new one
+            document.getElementById('step9').innerHTML = '<button onclick="exportToPDF()">Download Wanted Poster PDF</button><button onclick="prevStep(8)">Back</button>';
         }
 
         function exportToPDF() {
-            html2canvas(document.getElementById('character-sheet'), {scale: 2}).then(canvas => {
+            // Populate the hidden wanted poster div
+            document.getElementById('poster-name').textContent = character.name || 'Outlaw';
+            const wantedHindrance = character.hindrances.find(h => h.name.includes('Wanted'));
+            const crimeText = wantedHindrance ? `For: Being a ${wantedHindrance.name.split(' (')[0]}` : 'For: Various crimes against the law';
+            document.getElementById('poster-crime').textContent = crimeText;
+            const rewardValue = character.characteristics.CreditRating > 0 ? `$${character.characteristics.CreditRating * 10}` : 'Varies';
+            document.getElementById('poster-reward').textContent = `REWARD: ${rewardValue}`;
+
+            // Create a temporary canvas from the hidden div
+            html2canvas(document.getElementById('wanted-poster'), { scale: 2 }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgWidth = 190;
@@ -990,14 +1071,9 @@
                 let heightLeft = (canvas.height * imgWidth) / canvas.width;
                 let position = 0;
                 pdf.addImage(imgData, 'PNG', 10, position, imgWidth, heightLeft);
-                heightLeft -= pageHeight;
-                while (heightLeft >= 0) {
-                    position = heightLeft - (canvas.height * imgWidth) / canvas.width + pageHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, heightLeft);
-                    heightLeft -= pageHeight;
-                }
-                pdf.save(`${character.name || 'Character'}-Wanted-Poster.pdf`);
+                
+                const filename = `WANTED-${character.name.replace(/\s/g, '-') || 'Outlaw'}.pdf`;
+                pdf.save(filename);
             });
         }
 
