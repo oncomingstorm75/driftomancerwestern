@@ -228,52 +228,62 @@
         function rollNaturalTalent() { const allTalents = Object.entries(TALENTS); let rolledTalent = null; while (!rolledTalent) { const [name, data] = allTalents[Math.floor(Math.random() * allTalents.length)]; if (data.value >= 1 && data.value <= 3) { rolledTalent = { name, value: data.value, desc: data.desc }; } } character.naturalTalent = rolledTalent; document.getElementById('natural-talent').textContent = `${rolledTalent.name} (Value: ${rolledTalent.value})`; }
         function completeHT() { nextStep(8); }
         function completeBackstory() { ['name', 'gender', 'description', 'ideology', 'significant-people', 'meaningful', 'traits', 'hair-eye', 'marks'].forEach(key => { character[key.replace(/-/g, '')] = document.getElementById(key).value; }); character.madness = document.getElementById('madness').value; character.heritageText = document.getElementById('heritage').selectedOptions[0].text; nextStep(9); }
-        function generateAndDownloadJSON() { const jsonData = generateJsonData(); const jsonString = JSON.stringify(jsonData, null, 2); const blob = new Blob([jsonString], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; const charName = character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'character'; a.download = `${charName}_sheet.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
         
+        function generateAndDownloadJSON() {
+            const jsonData = generateJsonData();
+            const jsonString = JSON.stringify(jsonData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const charName = character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'character';
+            a.download = `${charName}_sheet.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
         // --- FINAL, CORRECTED FUNCTION ---
         function generateJsonData() {
             const { characteristics, skills } = character;
             const ageString = character.age || "0";
             const ageNum = parseInt(ageString.split('-')[0], 10);
 
-            // A definitive list of core CoC skills that have dedicated attributes on the sheet.
-            // Derived from your reference log.
+            // A definitive list of core skills that have dedicated attributes on the sheet.
             const coreSkillAttributes = [
                 'accounting', 'animal_handling', 'anthropology', 'appraise', 'archaeology', 'brawl',
                 'charm', 'climb', 'credit_rating', 'demolitions', 'disguise', 'dodge', 'drive_auto',
                 'electrical_repair', 'fast_talk', 'first_aid', 'handgun', 'history', 'intimidate',
                 'jump', 'law', 'library_use', 'listen', 'locksmith', 'mechanical_repair', 'medicine',
-                'natural_world', 'navigate', 'occult', 'operate_heavy_machinery', 'persuade',
+                'natural_world', 'navigate', 'occult', 'operate_heavy_machinery', 'persuade', 'own',
                 'psychology', 'read_lips', 'ride', 'sleight_of_hand', 'spot_hidden', 'stealth',
                 'swim', 'throw', 'track'
             ];
+
+            // A list of psychic powers for sorting into the correct repeating section.
+            const psychicSkills = ['Medium', 'Telekinesis', 'Shamanic Magic', 'Witchcraft'];
 
             // Mapping from our charactermancer skill names to the sheet's attribute names.
             const skillMap = {
                 'Fighting (Brawling)': 'brawl',
                 'Firearms (Handguns)': 'handgun',
                 'Drive Coach/Wagon': 'drive_auto',
-                'Language Own': 'own' // Assuming 'own' is the attribute for own language
+                'Language Own': 'own'
             };
             
             let data = {
                 // Core data
                 "name": character.name || "",
                 "occupation": document.getElementById('occupation-select').value || "",
-                "archetype": character.archetype.talent, // Send archetype talent name
+                "archetype": document.getElementById('archetype-select').value || "", // CORRECTED: Send Archetype name
                 "gender": character.gender || "", 
                 "age": ageNum,
 
                 // Base Characteristics
-                "strength": characteristics.STR || 0, 
-                "constitution": characteristics.CON || 0, 
-                "size": characteristics.SIZ || 0,
-                "dexterity": characteristics.DEX || 0, 
-                "appearance": characteristics.APP || 0, 
-                "intelligence": characteristics.INT || 0,
-                "power": characteristics.POW || 0, 
-                "education": characteristics.EDU || 0, 
-                "luck": character.luck || 0,
+                "strength": characteristics.STR || 0, "constitution": characteristics.CON || 0, "size": characteristics.SIZ || 0,
+                "dexterity": characteristics.DEX || 0, "appearance": characteristics.APP || 0, "intelligence": characteristics.INT || 0,
+                "power": characteristics.POW || 0, "education": characteristics.EDU || 0, "luck": character.luck || 0,
 
                 // Backstory fields
                 "personal_description_value": character.description || "",
@@ -283,9 +293,8 @@
                 
                 // Initialize repeating sections
                 "repeating_talents": [], "repeating_additionalskills": [], "repeating_artcraft": [],
-                "repeating_languages": [],
+                "repeating_languages": [], "repeating_psychic": [],
                  
-                // Bio & Notes
                 "bio": "", "gmnotes": ""
             };
             
@@ -310,7 +319,13 @@
                     }
                 }
                 
-                // 3. Handle specialty skills by putting them in repeating sections
+                // 3. Sort Psychic skills into their own repeating section
+                if (!handled && psychicSkills.includes(skillName)) {
+                    data.repeating_psychic.push({ name: skillName, value: skillValue });
+                    handled = true;
+                }
+
+                // 4. Handle other specialty skills by putting them in the correct repeating sections
                 if (!handled) {
                     const match = skillName.match(/^(.*?)\s\((.*)\)$/);
                     if (match) {
@@ -321,11 +336,10 @@
                         } else if (base === 'Language Other') {
                             data.repeating_languages.push({ name: specialty, value: skillValue });
                         } else {
-                            // Catch-all for other specialties like Firearms (Rifle), Science (Physics), etc.
                             data.repeating_additionalskills.push({ name: skillName, value: skillValue });
                         }
                     } else {
-                        // Catch-all for any non-core, non-specialty skill from your custom rules
+                        // Catch-all for any non-core, non-specialty skill
                         data.repeating_additionalskills.push({ name: skillName, value: skillValue });
                     }
                 }
