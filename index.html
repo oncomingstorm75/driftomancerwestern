@@ -338,6 +338,17 @@
             margin-top: 0;
         }
 
+        #occ-skill-choice-container {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px dashed var(--accent-gold);
+            border-radius: 5px;
+        }
+        
+        #occ-skill-choice-container h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
 
         @media (max-width: 600px) {
             body { padding: 10px; }
@@ -478,14 +489,8 @@
 
     <section id="step9" class="hidden">
         <h2>Step 9: Finalize Character</h2>
-        <button onclick="generateSheet()">Generate Sheet</button>
+        <button onclick="generateAndDownloadJSON()">Download Character JSON</button>
         <button onclick="prevStep(8)">Back</button>
-    </section>
-
-    <section id="character-sheet" class="hidden">
-        <h3 id="sheet-title"></h3>
-        <div id="sheet-content"></div>
-        <button onclick="prevStep(9)">Back to Finalize</button>
     </section>
     
     <script>
@@ -510,49 +515,49 @@
         };
 
         const OCCUPATIONS = {
-            'Archaeologist': { skillPointsFormula: (edu, dex, pow) => edu * 2 + Math.max(dex * 2, pow * 2), crRange: [6, 60], skills: ['Archaeology', 'History', 'Library Use', 'Spot Hidden', 'Navigate', 'Language Other (any)', 'Anthropology', 'any one other'] },
-            'Artist': { skillPointsFormula: (edu, dex, pow) => edu * 2 + Math.max(dex * 2, pow * 2), crRange: [6, 60], skills: ['Art/Craft (any)', 'History', 'Library Use', 'Psychology', 'Spot Hidden', 'Sleight of Hand', 'any two other'] },
-            'Author': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 30], skills: ['Art/Craft (Literature)', 'History', 'Library Use', 'Natural World or Occult', 'Language Other', 'Language Own', 'Psychology', 'any one other'] },
-            'Bartender': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [8, 25], skills: ['Accounting', 'two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)', 'Fighting (Brawling)', 'Listen', 'Psychology', 'Spot Hidden', 'any one other'] },
-            'Big Game Hunter': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [20, 50], skills: ['Firearms (any)', 'Listen or Spot Hidden', 'Natural World', 'Navigate', 'Language Other or Survival', 'Stealth', 'Track', 'Trap'] },
-            'Bounty Hunter': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [9, 30], skills: ['Drive Coach/Wagon', 'Fighting or Firearms (any)', 'one interpersonal (Fast Talk, Charm, Intimidate, or Persuade)', 'Law', 'Psychology', 'Rope Use', 'Track', 'Trap', 'Stealth'] },
-            'Butler': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 40], skills: ['Accounting or Appraise', 'Art/Craft (any, e.g. Cook, Tailor, Barber)', 'First Aid', 'Listen', 'Language Other', 'Psychology', 'Spot Hidden', 'any two other'] },
-            'Coachman/woman': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [10, 40], skills: ['Drive Coach/Wagon', 'two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)', 'Fighting or Firearms (any)', 'Listen', 'Ride', 'Spot Hidden', 'Throw'] },
-            'Confidence Trickster': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [20, 60], skills: ['Appraise', 'Art/Craft (Acting)', 'Charm', 'Disguise', 'Fast Talk', 'Gambling', 'Psychology', 'Sleight of Hand', 'Spot Hidden', 'Trap'] },
-            'Cowboy/girl': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [9, 25], skills: ['Animal Handling', 'Drive Coach/Wagon or Ride', 'Firearms (Rifle/Shotgun or Handgun)', 'First Aid', 'Listen', 'Natural World', 'Rope Use', 'Survival', 'Track'] },
-            'Craftsperson': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 40], skills: ['Art/Craft (any)', 'two other relevant to craft', 'Appraise', 'Electrical Repair', 'Listen', 'Mechanical Repair', 'Spot Hidden', 'any one other'] },
-            'Dilettante': { skillPointsFormula: (edu) => edu * 4, crRange: [50, 99], skills: ['Accounting', 'Appraise', 'Art/Craft (any)', 'Firearms (any)', 'Language Other (any)', 'Ride', 'any one other'] },
-            'Doctor': { skillPointsFormula: (edu) => edu * 4, crRange: [40, 99], skills: ['First Aid', 'Medicine', 'Psychology', 'Science (Biology, Chemistry, Pharmacy, etc.)', 'any two others'] },
-            'Entertainer': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [9, 40], skills: ['Art/Craft (e.g. Actor, Singer, Comedian, Musician etc.)', 'Disguise', 'two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)', 'Listen', 'Psychology', 'any two other'] },
-            'Expressman/woman': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [9, 25], skills: ['Animal Handling', 'Drive Coach/Wagon', 'Firearms (any)', 'Listen', 'Navigate', 'Ride', 'Spot Hidden', 'Survival'] },
-            'Farmer': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str*2, con*2), crRange: [9, 30], skills: ['Art/Craft (Farming)', 'Firearms (Rifle and Shotgun)', 'Drive Coach/Wagon', 'First Aid', 'Jump', 'Mechanical Repair', 'Natural World', 'Ride', 'Rope Use'] },
-            'Gambler': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [20, 50], skills: ['Appraise', 'Fast Talk', 'Gambling', 'Listen', 'Sleight of Hand', 'Spot Hidden', 'any two others'] },
-            'Gentleman/lady': { skillPointsFormula: (edu) => edu * 4, crRange: [50, 99], skills: ['Accounting', 'Appraise', 'Art/Craft (any)', 'Drive Coach/Wagon', 'Law', 'Language Other', 'Ride', 'any one other'] },
-            'Gunfighter': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [10, 40], skills: ['Drive Coach/Wagon or Ride', 'Fast Talk or Intimidate', 'Firearms (any)', 'Fighting (Brawling)', 'Listen', 'Psychology', 'Spot Hidden', 'Stealth'] },
-            'Hired Muscle': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [10, 25], skills: ['Fighting (Brawling)', 'Firearms (any)', 'Intimidate', 'Listen', 'Psychology', 'Stealth', 'Survival', 'Throw'] },
-            'Hobo': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [0, 9], skills: ['Listen', 'Navigate', 'Natural World', 'Stealth', 'Survival', 'Track', 'any one other'] },
-            'Hooker': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [9, 25], skills: ['Charm', 'Disguise', 'Fast Talk', 'Psychology', 'Sleight of Hand', 'any two others'] },
-            'Itinerant Worker': { skillPointsFormula: (edu, str) => edu * 2 + str * 2, crRange: [9, 25], skills: ['Art/Craft (any)', 'Climb', 'Electrical Repair or Mechanical Repair', 'First Aid', 'Listen', 'Spot Hidden', 'Throw'] },
-            'Journalist': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 50], skills: ['Art/Craft (Photography or Typing)', 'Fast Talk', 'History', 'Library Use', 'Listen', 'Language Own', 'Persuade', 'Psychology'] },
-            'Lawman': { skillPointsFormula: (edu, con) => edu * 2 + con * 2, crRange: [10, 40], skills: ['Firearms (Handguns)', 'Fighting (Brawling)', 'Intimidate', 'Law', 'Listen', 'Persuade', 'Psychology', 'Spot Hidden', 'Ride'] },
-            'Lawyer/Judge': { skillPointsFormula: (edu) => edu * 4, crRange: [20, 80], skills: ['Fast Talk', 'Law', 'Library Use', 'Language Own', 'Persuade', 'Psychology', 'any one other'] },
-            'Librarian': { skillPointsFormula: (edu) => edu * 4, crRange: [9, 40], skills: ['Accounting', 'Anthropology or Archaeology', 'History', 'Library Use', 'Occult', 'Language Own', 'any one other'] },
-            'Merchant': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [20, 70], skills: ['Accounting', 'Appraise', 'Fast Talk', 'Listen', 'Persuade', 'Psychology', 'Spot Hidden', 'any one other'] },
-            'Miner': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [9, 25], skills: ['Climb', 'Electrical Repair or Mechanical Repair', 'Jump', 'Listen', 'Navigate', 'Ride', 'Spot Hidden', 'Survival'] },
-            'Outlaw': { skillPointsFormula: (edu, dex, str) => edu * 2 + Math.max(dex * 2, str * 2), crRange: [0, 9], skills: ['Drive Coach/Wagon or Ride', 'Firearms (any)', 'Fighting (any)', 'Fast Talk or Intimidate', 'Mechanical Repair', 'Stealth', 'Survival'] },
-            'Person of God': { skillPointsFormula: (edu, pow) => edu * 2 + pow * 2, crRange: [9, 40], skills: ['History', 'Library Use', 'Listen', 'Medicine', 'Persuade', 'Psychology', 'any two others'] },
-            'Politician': { skillPointsFormula: (edu, app) => edu * 2 + app * 2, crRange: [30, 80], skills: ['Fast Talk', 'Law', 'Persuade', 'Psychology', 'History', 'Language Own', 'any two others'] },
-            'Pugilist': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [9, 25], skills: ['Dodge', 'Fighting (Brawling)', 'First Aid', 'Intimidate', 'Listen', 'Psychology', 'any two others'] },
-            'Rancher': { skillPointsFormula: (edu, str) => edu * 2 + str * 2, crRange: [10, 40], skills: ['Animal Handling', 'Appraise', 'Art/Craft (any)', 'Drive Coach/Wagon', 'Listen', 'Natural World', 'Ride', 'Rope Use', 'Survival', 'Track'] },
-            'Sailor': { skillPointsFormula: (edu, str, con) => edu * 2 + Math.max(str * 2, con * 2), crRange: [9, 25], skills: ['Climb', 'Fighting (Brawling)', 'Listen', 'Navigate', 'Jump', 'Mechanical Repair', 'Rope Use', 'Swim', 'Throw'] },
-            'Scout/Mountain Person': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [9, 30], skills: ['Climb', 'Listen', 'Natural World', 'Navigate', 'Ride', 'Spot Hidden', 'Stealth', 'Survival', 'Track'] },
-            'Scientist/Engineer': { skillPointsFormula: (edu) => edu * 4, crRange: [20, 80], skills: ['Electrical Repair', 'Library Use', 'Mechanical Repair', 'Science (any)', 'any four others'] },
-            'Soldier/Warrior': { skillPointsFormula: (edu, dex, str, con) => edu * 2 + Math.max(dex * 2, str * 2, con * 2), crRange: [9, 30], skills: ['Dodge', 'Fighting (any)', 'Firearms (any)', 'Intimidate', 'Listen', 'Stealth', 'Survival', 'any one other'] },
-            'Spy': { skillPointsFormula: (edu, dex) => edu * 2 + dex * 2, crRange: [9, 50], skills: ['Disguise', 'Fast Talk', 'Listen', 'Persuade', 'Psychology', 'Read Lips', 'Sleight of Hand', 'Stealth'] },
-            'Student/Teacher': { skillPointsFormula: (edu, int) => edu * 2 + int * 2, crRange: [9, 25], skills: ['Appraise', 'History', 'Language Other', 'Library Use', 'Occult', 'Language Own', 'Persuade', 'Psychology', 'Science'] },
-            'Tribe Member': { skillPointsFormula: (edu, pow) => edu * 2 + pow * 2, crRange: [9, 25], skills: ['Listen', 'Natural World', 'Navigate', 'Occult', 'Stealth', 'Survival', 'Swim', 'Track'] },
-            'Zealot': { skillPointsFormula: (edu, pow, con) => edu * 2 + Math.max(pow * 2, con * 2), crRange: [9, 25], skills: ['History', 'Intimidate', 'Listen', 'Persuade', 'Psychology', 'any two others'] },
-            'Lawyer': { skillPointsFormula: (edu) => edu * 4, crRange: [20, 80], skills: ['Fast Talk', 'Law', 'Library Use', 'Language Own', 'Persuade', 'Psychology', 'any one other'] }
+            'Archaeologist': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'POW' ? chars.POW * 2 : chars.DEX * 2), skillPointsText: "EDU x 2 + (DEX x 2 or POW x 2)", crRange: [6, 60], skills: ['Archaeology', 'History', 'Library Use', 'Spot Hidden', 'Navigate', 'Language Other (any)', 'Anthropology', 'any one other'] },
+            'Artist': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'POW' ? chars.POW * 2 : chars.DEX * 2), skillPointsText: "EDU x 2 + (DEX x 2 or POW x 2)", crRange: [6, 60], skills: ['Art/Craft (any)', 'History', 'Library Use', 'Psychology', 'Spot Hidden', 'Sleight of Hand', 'any two other'] },
+            'Author': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [9, 30], skills: ['Art/Craft (Literature)', 'History', 'Library Use', 'Natural World or Occult', 'Language Other', 'Language Own', 'Psychology', 'any one other'] },
+            'Bartender': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.APP * 2, skillPointsText: "EDU x 2 + APP x 2", crRange: [8, 25], skills: ['Accounting', 'two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)', 'Fighting (Brawling)', 'Listen', 'Psychology', 'Spot Hidden', 'any one other'] },
+            'Big Game Hunter': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'STR' ? chars.STR * 2 : chars.DEX * 2), skillPointsText: "EDU x 2 + (DEX x 2 or STR x 2)", crRange: [20, 50], skills: ['Firearms (any)', 'Listen or Spot Hidden', 'Natural World', 'Navigate', 'Language Other or Survival', 'Stealth', 'Track', 'Trap'] },
+            'Bounty Hunter': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'STR' ? chars.STR * 2 : chars.DEX * 2), skillPointsText: "EDU x 2 + (DEX x 2 or STR x 2)", crRange: [9, 30], skills: ['Drive Coach/Wagon', 'Fighting or Firearms (any)', 'one interpersonal (Fast Talk, Charm, Intimidate, or Persuade)', 'Law', 'Psychology', 'Rope Use', 'Track', 'Trap', 'Stealth'] },
+            'Butler': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [9, 40], skills: ['Accounting or Appraise', 'Art/Craft (any, e.g. Cook, Tailor, Barber)', 'First Aid', 'Listen', 'Language Other', 'Psychology', 'Spot Hidden', 'any two other'] },
+            'Coachman/woman': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.DEX * 2, skillPointsText: "EDU x 2 + DEX x 2", crRange: [10, 40], skills: ['Drive Coach/Wagon', 'two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)', 'Fighting or Firearms (any)', 'Listen', 'Ride', 'Spot Hidden', 'Throw'] },
+            'Confidence Trickster': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.APP * 2, skillPointsText: "EDU x 2 + APP x 2", crRange: [20, 60], skills: ['Appraise', 'Art/Craft (Acting)', 'Charm', 'Disguise', 'Fast Talk', 'Gambling', 'Psychology', 'Sleight of Hand', 'Spot Hidden', 'Trap'] },
+            'Cowboy/girl': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'STR' ? chars.STR * 2 : chars.DEX * 2), skillPointsText: "EDU x 2 + (DEX x 2 or STR x 2)", crRange: [9, 25], skills: ['Animal Handling', 'Drive Coach/Wagon or Ride', 'Firearms (Rifle/Shotgun or Handgun)', 'First Aid', 'Listen', 'Natural World', 'Rope Use', 'Survival', 'Track'] },
+            'Craftsperson': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [9, 40], skills: ['Art/Craft (any)', 'two other relevant to craft', 'Appraise', 'Electrical Repair', 'Listen', 'Mechanical Repair', 'Spot Hidden', 'any one other'] },
+            'Dilettante': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [50, 99], skills: ['Accounting', 'Appraise', 'Art/Craft (any)', 'Firearms (any)', 'Language Other (any)', 'Ride', 'any one other'] },
+            'Doctor': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [40, 99], skills: ['First Aid', 'Medicine', 'Psychology', 'Science (Biology, Chemistry, Pharmacy, etc.)', 'any two others'] },
+            'Entertainer': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.APP * 2, skillPointsText: "EDU x 2 + APP x 2", crRange: [9, 40], skills: ['Art/Craft (e.g. Actor, Singer, Comedian, Musician etc.)', 'Disguise', 'two interpersonal (Charm, Fast Talk, Intimidate, or Persuade)', 'Listen', 'Psychology', 'any two other'] },
+            'Expressman/woman': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.DEX * 2, skillPointsText: "EDU x 2 + DEX x 2", crRange: [9, 25], skills: ['Animal Handling', 'Drive Coach/Wagon', 'Firearms (any)', 'Listen', 'Navigate', 'Ride', 'Spot Hidden', 'Survival'] },
+            'Farmer': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'CON' ? chars.CON * 2 : chars.STR * 2), skillPointsText: "EDU x 2 + (STR x 2 or CON x 2)", crRange: [9, 30], skills: ['Art/Craft (Farming)', 'Firearms (Rifle and Shotgun)', 'Drive Coach/Wagon', 'First Aid', 'Jump', 'Mechanical Repair', 'Natural World', 'Ride', 'Rope Use'] },
+            'Gambler': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.APP * 2, skillPointsText: "EDU x 2 + APP x 2", crRange: [20, 50], skills: ['Appraise', 'Fast Talk', 'Gambling', 'Listen', 'Sleight of Hand', 'Spot Hidden', 'any two others'] },
+            'Gentleman/lady': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [50, 99], skills: ['Accounting', 'Appraise', 'Art/Craft (any)', 'Drive Coach/Wagon', 'Law', 'Language Other', 'Ride', 'any one other'] },
+            'Gunfighter': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'STR' ? chars.STR * 2 : chars.DEX * 2), skillPointsText: "EDU x 2 + (DEX x 2 or STR x 2)", crRange: [10, 40], skills: ['Drive Coach/Wagon or Ride', 'Fast Talk or Intimidate', 'Firearms (any)', 'Fighting (Brawling)', 'Listen', 'Psychology', 'Spot Hidden', 'Stealth'] },
+            'Hired Muscle': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'CON' ? chars.CON * 2 : chars.STR * 2), skillPointsText: "EDU x 2 + (STR x 2 or CON x 2)", crRange: [10, 25], skills: ['Fighting (Brawling)', 'Firearms (any)', 'Intimidate', 'Listen', 'Psychology', 'Stealth', 'Survival', 'Throw'] },
+            'Hobo': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'CON' ? chars.CON * 2 : chars.STR * 2), skillPointsText: "EDU x 2 + (STR x 2 or CON x 2)", crRange: [0, 9], skills: ['Listen', 'Navigate', 'Natural World', 'Stealth', 'Survival', 'Track', 'any one other'] },
+            'Hooker': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.APP * 2, skillPointsText: "EDU x 2 + APP x 2", crRange: [9, 25], skills: ['Charm', 'Disguise', 'Fast Talk', 'Psychology', 'Sleight of Hand', 'any two others'] },
+            'Itinerant Worker': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.STR * 2, skillPointsText: "EDU x 2 + STR x 2", crRange: [9, 25], skills: ['Art/Craft (any)', 'Climb', 'Electrical Repair or Mechanical Repair', 'First Aid', 'Listen', 'Spot Hidden', 'Throw'] },
+            'Journalist': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [9, 50], skills: ['Art/Craft (Photography or Typing)', 'Fast Talk', 'History', 'Library Use', 'Listen', 'Language Own', 'Persuade', 'Psychology'] },
+            'Lawman': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.CON * 2, skillPointsText: "EDU x 2 + CON x 2", crRange: [10, 40], skills: ['Firearms (Handguns)', 'Fighting (Brawling)', 'Intimidate', 'Law', 'Listen', 'Persuade', 'Psychology', 'Spot Hidden', 'Ride'] },
+            'Lawyer/Judge': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [20, 80], skills: ['Fast Talk', 'Law', 'Library Use', 'Language Own', 'Persuade', 'Psychology', 'any one other'] },
+            'Librarian': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [9, 40], skills: ['Accounting', 'Anthropology or Archaeology', 'History', 'Library Use', 'Occult', 'Language Own', 'any one other'] },
+            'Merchant': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.APP * 2, skillPointsText: "EDU x 2 + APP x 2", crRange: [20, 70], skills: ['Accounting', 'Appraise', 'Fast Talk', 'Listen', 'Persuade', 'Psychology', 'Spot Hidden', 'any one other'] },
+            'Miner': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'CON' ? chars.CON * 2 : chars.STR * 2), skillPointsText: "EDU x 2 + (STR x 2 or CON x 2)", crRange: [9, 25], skills: ['Climb', 'Electrical Repair or Mechanical Repair', 'Jump', 'Listen', 'Navigate', 'Ride', 'Spot Hidden', 'Survival'] },
+            'Outlaw': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'STR' ? chars.STR * 2 : chars.DEX * 2), skillPointsText: "EDU x 2 + (DEX x 2 or STR x 2)", crRange: [0, 9], skills: ['Drive Coach/Wagon or Ride', 'Firearms (any)', 'Fighting (any)', 'Fast Talk or Intimidate', 'Mechanical Repair', 'Stealth', 'Survival'] },
+            'Person of God': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.POW * 2, skillPointsText: "EDU x 2 + POW x 2", crRange: [9, 40], skills: ['History', 'Library Use', 'Listen', 'Medicine', 'Persuade', 'Psychology', 'any two others'] },
+            'Politician': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.APP * 2, skillPointsText: "EDU x 2 + APP x 2", crRange: [30, 80], skills: ['Fast Talk', 'Law', 'Persuade', 'Psychology', 'History', 'Language Own', 'any two others'] },
+            'Pugilist': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'CON' ? chars.CON * 2 : chars.STR * 2), skillPointsText: "EDU x 2 + (STR x 2 or CON x 2)", crRange: [9, 25], skills: ['Dodge', 'Fighting (Brawling)', 'First Aid', 'Intimidate', 'Listen', 'Psychology', 'any two others'] },
+            'Rancher': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.STR * 2, skillPointsText: "EDU x 2 + STR x 2", crRange: [10, 40], skills: ['Animal Handling', 'Appraise', 'Art/Craft (any)', 'Drive Coach/Wagon', 'Listen', 'Natural World', 'Ride', 'Rope Use', 'Survival', 'Track'] },
+            'Sailor': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'CON' ? chars.CON * 2 : chars.STR * 2), skillPointsText: "EDU x 2 + (STR x 2 or CON x 2)", crRange: [9, 25], skills: ['Climb', 'Fighting (Brawling)', 'Listen', 'Navigate', 'Jump', 'Mechanical Repair', 'Rope Use', 'Swim', 'Throw'] },
+            'Scout/Mountain Person': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.DEX * 2, skillPointsText: "EDU x 2 + DEX x 2", crRange: [9, 30], skills: ['Climb', 'Listen', 'Natural World', 'Navigate', 'Ride', 'Spot Hidden', 'Stealth', 'Survival', 'Track'] },
+            'Scientist/Engineer': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [20, 80], skills: ['Electrical Repair', 'Library Use', 'Mechanical Repair', 'Science (any)', 'any four others'] },
+            'Soldier/Warrior': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + Math.max(chars.DEX * 2, chars.STR * 2, chars.CON * 2), skillPointsText: "EDU x 2 + (DEX x 2 or STR x 2 or CON x 2)", crRange: [9, 30], skills: ['Dodge', 'Fighting (any)', 'Firearms (any)', 'Intimidate', 'Listen', 'Stealth', 'Survival', 'any one other'] },
+            'Spy': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.DEX * 2, skillPointsText: "EDU x 2 + DEX x 2", crRange: [9, 50], skills: ['Disguise', 'Fast Talk', 'Listen', 'Persuade', 'Psychology', 'Read Lips', 'Sleight of Hand', 'Stealth'] },
+            'Student/Teacher': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.INT * 2, skillPointsText: "EDU x 2 + INT x 2", crRange: [9, 25], skills: ['Appraise', 'History', 'Language Other', 'Library Use', 'Occult', 'Language Own', 'Persuade', 'Psychology', 'Science'] },
+            'Tribe Member': { skillPointsFormula: (chars) => chars.EDU * 2 + chars.POW * 2, skillPointsText: "EDU x 2 + POW x 2", crRange: [9, 25], skills: ['Listen', 'Natural World', 'Navigate', 'Occult', 'Stealth', 'Survival', 'Swim', 'Track'] },
+            'Zealot': { skillPointsFormula: (chars, choice) => chars.EDU * 2 + (choice === 'CON' ? chars.CON * 2 : chars.POW * 2), skillPointsText: "EDU x 2 + (POW x 2 or CON x 2)", crRange: [9, 25], skills: ['History', 'Intimidate', 'Listen', 'Persuade', 'Psychology', 'any two others'] },
+            'Lawyer': { skillPointsFormula: (chars) => chars.EDU * 4, skillPointsText: "EDU x 4", crRange: [20, 80], skills: ['Fast Talk', 'Law', 'Library Use', 'Language Own', 'Persuade', 'Psychology', 'any one other'] }
         };
 
         const HINDRANCES = {
@@ -783,6 +788,10 @@
 
             const occupation = OCCUPATIONS[occupationKey];
             infoDiv.innerHTML = `
+                <h4>Skill Point Calculation:</h4>
+                <p>${occupation.skillPointsText}</p>
+                <h4>Credit Rating Range:</h4>
+                <p>${occupation.crRange[0]} - ${occupation.crRange[1]}</p>
                 <h4>Occupation Skills:</h4>
                 <ul>
                     ${occupation.skills.map(skill => `<li>${skill}</li>`).join('')}
@@ -957,9 +966,15 @@
         }
 
         function getSkillPoints() {
-            const {skillPointsFormula} = character.occupation;
-            const args = [character.characteristics.EDU, character.characteristics.DEX, character.characteristics.POW, character.characteristics.STR, character.characteristics.CON, character.characteristics.APP, character.characteristics.INT, character.characteristics.SIZ];
-            const occPoints = skillPointsFormula(...args.slice(0, skillPointsFormula.length));
+            const { skillPointsFormula } = character.occupation;
+            
+            let choice = null;
+            const choiceRadio = document.querySelector('input[name="occ-skill-choice"]:checked');
+            if (choiceRadio) {
+                choice = choiceRadio.value;
+            }
+            
+            const occPoints = skillPointsFormula(character.characteristics, choice);
             return { occPoints, persPoints: character.characteristics.INT * 2, archPoints: 100 };
         }
 
@@ -1011,7 +1026,7 @@
             }
             return false;
         }
-
+        
         function addSpecialtySkill(baseSkillName, containerId) {
             const container = document.getElementById(containerId);
             if (!container) {
@@ -1048,15 +1063,41 @@
             container.appendChild(item);
         }
 
-        function calculateAndDisplaySkillPoints() {
+        function updateSkillPointTotals() {
             const { occPoints, persPoints } = getSkillPoints();
             document.getElementById('occ-total').textContent = occPoints;
             document.getElementById('pers-total').textContent = persPoints;
-            
+            recalculateSkillPoints();
+        }
+
+        function calculateAndDisplaySkillPoints() {
             const skillAllocDiv = document.getElementById('skill-alloc');
             const selectedOccupationName = document.getElementById('occupation-select').value;
             const minCR = character.occupation.crRange[0];
-            skillAllocDiv.innerHTML = `<p class="subtitle" style="font-weight:bold; color: var(--glow-yellow);">Reminder: Your occupation (${selectedOccupationName}) requires a minimum Credit Rating of ${minCR}.</p>`;
+            
+            let headerHTML = `<p class="subtitle" style="font-weight:bold; color: var(--glow-yellow);">Reminder: Your occupation (${selectedOccupationName}) requires a minimum Credit Rating of ${minCR}.</p>`;
+            
+            const formulaText = character.occupation.skillPointsText;
+            const choiceRegex = /\(([^)]+)\)/;
+            const choiceMatch = formulaText.match(choiceRegex);
+
+            if (choiceMatch && choiceMatch[1].includes(' or ')) {
+                headerHTML += '<div id="occ-skill-choice-container">';
+                headerHTML += '<h4>Choose Stat for Occupation Points:</h4>';
+                const options = choiceMatch[1].split(' or ').map(s => s.trim().split(' ')[0]);
+                
+                options.forEach((opt, index) => {
+                    const checked = index === 0 ? 'checked' : '';
+                    headerHTML += `
+                        <label style="display: inline-block; margin-right: 15px;">
+                            <input type="radio" name="occ-skill-choice" value="${opt}" ${checked} onchange="updateSkillPointTotals()">
+                            ${opt}
+                        </label>
+                    `;
+                });
+                headerHTML += '</div>';
+            }
+            skillAllocDiv.innerHTML = headerHTML;
 
             ALL_SKILLS.Dodge.base = Math.floor(character.characteristics.DEX / 2);
             ALL_SKILLS['Language Own'].base = character.characteristics.EDU;
@@ -1104,15 +1145,8 @@
                 categoryDiv.appendChild(gridDiv);
                 skillAllocDiv.appendChild(categoryDiv);
             }
-             
-            addSpecialtySkill('Art/Craft', 'Art-Craft-specialties');
-            const tinkeringItem = document.querySelector('.specialty-item[data-skill-template="Art/Craft"]:last-child');
-            if(tinkeringItem) {
-                tinkeringItem.querySelector('.specialty-input').value = 'Tinkering';
-            }
-
-
-            recalculateSkillPoints();
+            
+            updateSkillPointTotals();
         }
 
         function recalculateSkillPoints() {
@@ -1231,14 +1265,14 @@
 
         function updateSelectedHindrances() {
             const checked = [...document.querySelectorAll('#hindrance-checkboxes input:checked')];
-            character.hindrances = checked.map(cb => ({name: cb.value, value: HINDRANCES[cb.value].value}));
+            character.hindrances = checked.map(cb => ({name: cb.value, value: HINDRANCES[cb.value].value, desc: HINDRANCES[cb.value].desc}));
             document.getElementById('selected-hinds').textContent = character.hindrances.map(h => h.name.split(' (')[0]).join(', ') || 'None';
             document.getElementById('talent-points').textContent = character.hindrances.reduce((sum, h) => sum + h.value, 0);
         }
 
         function updateSelectedTalents() {
             const checked = [...document.querySelectorAll('#talent-checkboxes input:checked')];
-            character.talents = checked.map(cb => ({name: cb.value, value: TALENTS[cb.value].value}));
+             character.talents = checked.map(cb => ({name: cb.value, value: TALENTS[cb.value].value, desc: TALENTS[cb.value].desc}));
             document.getElementById('selected-tals').textContent = character.talents.map(t => t.name.split(' (')[0]).join(', ') || 'None';
         }
 
@@ -1249,9 +1283,10 @@
             while (!rolledTalent) {
                 const [name, data] = allTalents[Math.floor(Math.random() * allTalents.length)];
                 if (data.value >= 1 && data.value <= 3) {
-                    rolledTalent = { name, value: data.value };
+                    rolledTalent = { name, value: data.value, desc: data.desc };
                 }
             }
+            character.naturalTalent = rolledTalent;
             document.getElementById('natural-talent').textContent = `${rolledTalent.name} (Value: ${rolledTalent.value})`;
         }
 
@@ -1268,68 +1303,140 @@
             nextStep(9);
         }
 
-        function generateSheet() {
-            const title = document.getElementById('sheet-title');
-            const content = document.getElementById('sheet-content');
-            title.textContent = character.name || 'Untitled Character';
-
-            let skillsHtml = `<h3>Skills</h3><ul>
-                <li><strong>Occupation Points Spent:</strong> ${document.getElementById('occ-total').textContent - parseInt(document.getElementById('occ-rem').textContent)}</li>
-                <li><strong>Personal Points Spent:</strong> ${document.getElementById('pers-total').textContent - parseInt(document.getElementById('pers-rem').textContent)}</li>
-                <li><strong>Archetype Bonus Spent:</strong> ${100 - parseInt(document.getElementById('arch-rem').textContent)}</li>
-            </ul><hr><h3>Skill Values</h3><ul>`;
-            
-            Object.entries(character.skills).sort(([a], [b]) => a.localeCompare(b)).forEach(([skill, val]) => {
-                // Determine the base skill to compare against for specialty skills
-                let baseSkillName = skill;
-                const specialtyMatch = skill.match(/^(.*?)\s\(.*\)$/);
-                if (specialtyMatch) {
-                    baseSkillName = specialtyMatch[1];
-                }
-                
-                if (ALL_SKILLS[baseSkillName] && val > ALL_SKILLS[baseSkillName].base) {
-                    skillsHtml += `<li><strong>${skill}:</strong> ${val}%</li>`;
-                } else if (skill === 'Dodge' && val > 0) { // Only show dodge if points are spent
-                     skillsHtml += `<li><strong>${skill}:</strong> ${val}%</li>`;
-                }
-            });
-
-            skillsHtml += '</ul>';
-            
-            const archetypeTalentName = character.archetype ? character.archetype.talent : 'N/A';
-
-            content.innerHTML = `
-                <h3>Characteristics</h3>
-                <ul>${charList.map(c => `<li><strong>${c}:</strong> ${character.characteristics[c] || 15}</li>`).join('')}</ul>
-                <h3>Secondary Attributes</h3>
-                <p><strong>Luck:</strong> ${character.luck}</p>
-                 <p><strong>Move:</strong> ${character.characteristics.Move}</p>
-                <p><strong>Hit Points:</strong> ${character.characteristics.HP}</p>
-                <p><strong>Magic Points:</strong> ${character.characteristics.MP}</p>
-                <p><strong>Sanity:</strong> ${character.characteristics.Sanity}</p>
-                <p><strong>Build:</strong> ${character.characteristics.Build}</p>
-                ${skillsHtml}
-                <h3>Talents & Hindrances</h3>
-                <p><strong>Archetype Talent:</strong> ${archetypeTalentName}</p>
-                <p><strong>Natural Talent:</strong> ${document.getElementById('natural-talent').textContent}</p>
-                <p><strong>Selected Talents:</strong> ${character.talents.map(t => t.name.split(' (')[0]).join(', ') || 'None'}</p>
-                <p><strong>Selected Hindrances:</strong> ${character.hindrances.map(h => h.name.split(' (')[0]).join(', ') || 'None'}</p>
-                <h3>Backstory</h3>
-                <p><strong>Gender:</strong> ${character.gender}</p>
-                <p><strong>Description:</strong> ${character.description}</p>
-                <p><strong>Heritage:</strong> ${character.heritageText}</p>
-                <p><strong>Ideology/Beliefs:</strong> ${character.ideology}</p>
-                <p><strong>Significant People:</strong> ${character.significantpeople}</p>
-                <p><strong>Meaningful Location/Possessions:</strong> ${character.meaningful}</p>
-                <p><strong>Traits:</strong> ${character.traits}</p>
-                <p><strong>Bout of Madness:</strong> ${character.madness}</p>
-                <p><strong>Hair/Eye Color:</strong> ${character.haireye}</p>
-                <p><strong>Distinguishing Marks:</strong> ${character.marks}</p>
-            `;
-            document.getElementById('character-sheet').classList.remove('hidden');
-            document.getElementById('step9').classList.add('hidden');
+        function generateAndDownloadJSON() {
+            const jsonData = generateJsonData();
+            const jsonString = JSON.stringify(jsonData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const charName = character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'character';
+            a.download = `${charName}_sheet.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
-        
+
+        function generateJsonData() {
+            const { characteristics, skills } = character;
+            const hp = characteristics.HP || 0;
+            const san = characteristics.Sanity || 0;
+            const mp = characteristics.MP || 0;
+            
+            const buildVal = characteristics.Build || 0;
+            let db = "";
+            if (buildVal === -2) db = "-2";
+            else if (buildVal === -1) db = "-1";
+            else if (buildVal === 0) db = "0";
+            else if (buildVal === 1) db = "+1D4";
+            else if (buildVal === 2) db = "+1D6";
+            
+            const ageString = character.age || "0";
+            const ageNum = parseInt(ageString.split('-')[0], 10);
+
+            // Base structure
+            let data = {
+                "character_name": character.name || "",
+                "strength": characteristics.STR || 0, "constitution": characteristics.CON || 0, "size": characteristics.SIZ || 0,
+                "dexterity": characteristics.DEX || 0, "appearance": characteristics.APP || 0, "intelligence": characteristics.INT || 0,
+                "power": characteristics.POW || 0, "education": characteristics.EDU || 0, "luck": character.luck || 0,
+                "sanity": { "current": san, "max": san }, "hitpoints": { "current": hp, "max": hp }, "magicpoints": { "current": mp, "max": mp },
+                "major_wound_threshold": Math.floor(hp / 2), "damage_bonus": db, "build": buildVal, "movement_rate": characteristics.Move || 0,
+                "occupation": document.getElementById('occupation-select').value || "",
+                "archetype": document.getElementById('archetype-select').value || "",
+                "gender": character.gender || "", "birthplace": "", "residence": "", "age": ageNum,
+                "personal_description_value": character.description || "",
+                "ideology_beliefs_value": character.ideology || "",
+                "significant_people_value": character.significantpeople || "",
+                "phobias_manias_value": character.madness || "",
+                "credit_rating": skills['Credit Rating'] || 0,
+                // Map basic skills
+                "charm": skills.Charm || 0, "listen": skills.Listen || 0, "occult": skills.Occult || 0, "persuade": skills.Persuade || 0,
+                "fast_talk": skills['Fast Talk'] || 0, "natural_world": skills['Natural World'] || 0, "spot_hidden": skills['Spot Hidden'] || 0,
+                "stealth": skills.Stealth || 0, "climb": skills.Climb || 0, "dodge": skills.Dodge || 0, "drive_auto": skills['Drive Coach/Wagon'] || 0,
+                "first_aid": skills['First Aid'] || 0, "history": skills.History || 0, "intimidate": skills.Intimidate || 0,
+                "jump": skills.Jump || 0, "library_use": skills['Library Use'] || 0, "mechanical_repair": skills['Mechanical Repair'] || 0,
+                "psychology": skills.Psychology || 0, "sleight_of_hand": skills['Sleight of Hand'] || 0, "swim": skills.Swim || 0,
+                "throw": skills.Throw || 0, "track": skills.Track || 0,
+                "brawl": skills['Fighting (Brawling)'] || 0, "handgun": skills['Firearms (Handguns)'] || 0,
+                "rifle_shotgun": (skills['Firearms (Rifles)'] || 0) + (skills['Firearms (Shotguns)'] || 0),
+                "accounting": skills.Accounting || 0, "animal_handling": skills['Animal Handling'] || 0, "anthropology": skills.Anthropology || 0,
+                "appraise": skills.Appraise || 0, "archaeology": skills.Archaeology || 0, "demolitions": skills.Demolitions || 0,
+                "disguise": skills.Disguise || 0, "law": skills.Law || 0, "locksmith": skills.Locksmith || 0, "medicine": skills.Medicine || 0,
+                "navigate": skills.Navigate || 0, "operate_heavy_machinery": skills['Operate Heavy Machinery'] || 0, "read_lips": skills['Read Lips'] || 0,
+                "ride": skills.Ride || 0,
+                "repeating_talents": [], "repeating_weapons": [], "repeating_additionalskills": [], "repeating_languages": [], "repeating_psychic": [], 
+                "repeating_survival": [], "repeating_artcraft": [], "repeating_assets": [], "_reporder_repeating_possessions": "", "_reporder_repeating_talents": "",
+                "bio": "", "gmnotes": ""
+            };
+            
+            // Add talents and hindrances to bio/gmnotes
+            let bioContent = "Talents:\n";
+            if(character.archetype.talent) bioContent += `- ${character.archetype.talent} (Archetype): ${character.archetype.talentDesc}\n`;
+            if(character.naturalTalent) bioContent += `- ${character.naturalTalent.name} (Natural): ${character.naturalTalent.desc}\n`;
+            character.talents.forEach(t => bioContent += `- ${t.name}: ${t.desc}\n`);
+            
+            let gmNotesContent = "Hindrances:\n";
+            character.hindrances.forEach(h => gmNotesContent += `- ${h.name}: ${h.desc}\n`);
+
+            data.bio = bioContent;
+            data.gmnotes = gmNotesContent;
+            
+            // Process specialty skills
+            const specialtySkills = {
+                'Art/Craft': data.repeating_artcraft,
+                'Language Other': data.repeating_languages,
+                'Science': data.repeating_additionalskills, // No dedicated science repeating section in provided json
+                'Fighting': [], // temp holder
+                'Firearms': [] // temp holder
+            };
+            
+             for (const skillName in skills) {
+                const match = skillName.match(/^(.*?)\s\((.*)\)$/);
+                if (match) {
+                    const base = match[1];
+                    const specialty = match[2];
+                    if (specialtySkills[base]) {
+                        specialtySkills[base].push({ name: specialty, value: skills[skillName] });
+                    } else if (base === 'Fighting' && specialty !== 'Brawling') {
+                         specialtySkills.Fighting.push({ name: specialty, value: skills[skillName] });
+                    } else if (base === 'Firearms' && specialty !== 'Handguns' && specialty !== 'Rifles' && specialty !== 'Shotguns') {
+                         specialtySkills.Firearms.push({ name: specialty, value: skills[skillName] });
+                    }
+                }
+            }
+
+            // Populate fixed specialty slots
+            for(let i = 0; i < 2; i++) {
+                if(specialtySkills.Fighting[i]) {
+                    data[`fighting_skill_${i+1}_name`] = specialtySkills.Fighting[i].name;
+                    data[`fighting_skill_${i+1}`] = specialtySkills.Fighting[i].value;
+                }
+                if(specialtySkills.Firearms[i]) {
+                    data[`firearms_skill_${i+1}_name`] = specialtySkills.Firearms[i].name;
+                    data[`firearms_skill_${i+1}`] = specialtySkills.Firearms[i].value;
+                }
+            }
+
+            const pulpSettings = {
+                "toggle_pulp_skills": "on", "toggle_pulp_talents": "on", "toggle_pulp_hitpoint_calculation": "on",
+                "toggle_pulp_luck_recovery": "on", "toggle_pulp_initiative": "on", "toggle_pulp_archetype": "on",
+                "toggle_reassure": "on", "toggle_all_skills": "1", "toggle_arkham_skills": "0", "include_reassure": "0",
+                "dice_toggle": "1)]]}}{{verbose=1", "sheet_initialized": "yes", "sheet_version": "5.7", "setting_header": "pulp"
+            };
+
+            const finalData = { ...data, ...pulpSettings };
+
+            // Calculate hard and extreme values
+            for(const char of ['strength', 'constitution', 'size', 'dexterity', 'appearance', 'intelligence', 'power', 'education']) {
+                finalData[`${char}_hard`] = Math.floor(finalData[char] / 2);
+                finalData[`${char}_extreme`] = Math.floor(finalData[char] / 5);
+            }
+
+            return finalData;
+        }
+
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
