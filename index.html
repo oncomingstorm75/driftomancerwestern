@@ -252,9 +252,9 @@
             const ageString = character.age || "0";
             const ageNum = parseInt(ageString.split('-')[0], 10);
             const coreSkillAttributes = [ 'accounting', 'animal_handling', 'anthropology', 'appraise', 'archaeology', 'brawl', 'charm', 'climb', 'credit_rating', 'demolitions', 'disguise', 'dodge', 'electrical_repair', 'fast_talk', 'first_aid', 'handgun', 'history', 'intimidate', 'jump', 'law', 'library_use', 'listen', 'locksmith', 'mechanical_repair', 'medicine', 'natural_world', 'navigate', 'occult', 'operate_heavy_machinery', 'persuade', 'own', 'psychology', 'read_lips', 'ride', 'sleight_of_hand', 'spot_hidden', 'stealth', 'swim', 'throw', 'track' ];
-            const skillsForAdditional = ['Gambling', 'Rope Use', 'Trap', 'Drive Coach/Wagon'];
             const psychicSkills = ['Medium', 'Telekinesis', 'Shamanic Magic', 'Witchcraft'];
             const skillMap = { 'Fighting (Brawling)': 'brawl', 'Firearms (Handguns)': 'handgun', 'Language Own': 'own' };
+            const additionalSkillsList = ['Gambling', 'Rope Use', 'Trap', 'Drive Coach/Wagon'];
             
             let data = {
                 "name": character.name || "", "occupation": document.getElementById('occupation-select').value || "", "archetype": document.getElementById('archetype-select').value || "", "gender": character.gender || "", "age": ageNum,
@@ -272,11 +272,11 @@
                 
                 if (!handled) { const simpleName = skillName.toLowerCase().replace(/ /g, '_'); if (coreSkillAttributes.includes(simpleName)) { data[simpleName] = skillValue; handled = true; } }
                 
-                if (!handled && skillName.startsWith('Fighting (')) { data.repeating_fighting.push({ fighting_skill_name: skillName, value: skillValue }); handled = true; }
-                if (!handled && skillName.startsWith('Firearms (')) { data.repeating_firearms.push({ firearms_skill_name: skillName, value: skillValue }); handled = true; }
+                if (!handled && skillName.startsWith('Fighting (')) { data.repeating_fighting.push({ name: skillName, value: skillValue }); handled = true; }
+                if (!handled && skillName.startsWith('Firearms (')) { data.repeating_firearms.push({ name: skillName, value: skillValue }); handled = true; }
                 if (!handled && psychicSkills.includes(skillName)) { data.repeating_psychic.push({ name: skillName, value: skillValue }); handled = true; }
                 if (!handled && skillName === 'Survival') { data.repeating_survival.push({ name: skillName, value: skillValue }); handled = true; }
-                if (!handled && skillsForAdditional.includes(skillName)) { data.repeating_additionalskills.push({ name: skillName, value: skillValue }); handled = true; }
+                if (!handled && additionalSkillsList.includes(skillName)) { data.repeating_additionalskills.push({ name: skillName, value: skillValue }); handled = true; }
                 
                 if (!handled) { const match = skillName.match(/^(.*?)\s\((.*)\)$/); if (match) { const base = match[1]; const specialty = match[2]; if (base === 'Art/Craft') { data.repeating_artcraft.push({ name: specialty, value: skillValue }); } else if (base === 'Language Other') { data.repeating_languages.push({ name: specialty, value: skillValue }); } else { data.repeating_additionalskills.push({ name: skillName, value: skillValue }); } } else { data.repeating_additionalskills.push({ name: skillName, value: skillValue }); } }
             }
